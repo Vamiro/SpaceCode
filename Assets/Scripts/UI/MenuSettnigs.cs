@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Threading.Tasks;
 
 public class MenuSettnigs : UIPanel<SettingsData>
 {
