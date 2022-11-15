@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 internal class MainMenuState : IState
 {
@@ -15,6 +16,7 @@ internal class MainMenuState : IState
 
     private void OnStart()
     {
+        SceneManager.LoadScene(1);
         Debug.Log("OnStart");
     }
 
@@ -26,6 +28,7 @@ internal class MainMenuState : IState
 
     private void OnCredits()
     {
+        StateMachine.Instance.ChangeState(new MenuCreditsState());
         Debug.Log("OnCredits");
     }
 

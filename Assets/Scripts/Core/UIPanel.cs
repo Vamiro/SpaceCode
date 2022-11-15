@@ -1,18 +1,17 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class UIPanelCore : MonoBehaviour
 {
-    protected void ShowInternal() {
+    protected void ShowInternal()
+    {
         gameObject.SetActive(true);
         OnShow();
     }
 
     protected abstract void OnShow();
 
-    public void Close() {
+    public void Close()
+    {
         OnClose();
         gameObject.SetActive(false);
     }

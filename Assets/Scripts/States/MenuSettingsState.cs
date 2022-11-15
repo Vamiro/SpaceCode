@@ -1,8 +1,5 @@
 ﻿using DG.Tweening;
-using System;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Audio;
 
 internal class MenuSettingsState : IState
 {
@@ -32,7 +29,6 @@ internal class MenuSettingsState : IState
     {
         SettingsData.Instance.Save();
         _menuSettingsRect.DOAnchorPos(new Vector2(0, 1100), 0.5f).OnComplete(() => MenuSettings.Close());
-        
+
     }
 }
-

@@ -20,4 +20,6 @@ public class Panels : MonoBehaviour
     public LoadingScreen loadingScreen;
     public Menu menu;
     public MenuSettnigs menuSettnigs;
+    public MenuCredits menuCredits;
+
 }

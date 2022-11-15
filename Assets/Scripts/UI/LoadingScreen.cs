@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Threading.Tasks;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 public class LoadingScreen : UIPanel

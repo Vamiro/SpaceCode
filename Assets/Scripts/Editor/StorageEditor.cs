@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Enumeration;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,7 +12,7 @@ public class StorageEditor : EditorWindow
     public static void ShowWindow()
     {
         EditorWindow.GetWindow<StorageEditor>().Show();
-        
+
     }
     public void OnGUI()
     {

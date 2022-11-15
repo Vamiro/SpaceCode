@@ -10,7 +10,7 @@ internal class InitState : IState
     {
         InitializeAudio();
         LoadingScreen.Show();
-        await Task.Delay(TimeSpan.FromSeconds(10));
+        await Task.Delay(TimeSpan.FromSeconds(5));
         StateMachine.Instance.ChangeState(new MainMenuState());
     }
 

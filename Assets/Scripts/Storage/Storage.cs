@@ -1,5 +1,4 @@
 using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 public class Storage : Singleton<Storage>
@@ -8,9 +7,9 @@ public class Storage : Singleton<Storage>
 
     static Storage()
     {
-        if (!Directory.Exists(StorageDirectory)) 
-        { 
-            Directory.CreateDirectory(StorageDirectory); 
+        if (!Directory.Exists(StorageDirectory))
+        {
+            Directory.CreateDirectory(StorageDirectory);
         }
     }
 
