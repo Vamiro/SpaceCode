@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 internal class MainMenuState : IState
 {
-    public Menu Menu => Panels.Instance.menu;
+    public static Menu Menu => Panels.Instance.menu;
 
     public void Enter()
     {
@@ -16,7 +16,7 @@ internal class MainMenuState : IState
 
     private void OnStart()
     {
-        SceneManager.LoadScene(1);
+        StateMachine.Instance.ChangeState(new GameOnState());
         Debug.Log("OnStart");
     }
 
@@ -40,6 +40,5 @@ internal class MainMenuState : IState
 
     public void Exit()
     {
-
     }
 }

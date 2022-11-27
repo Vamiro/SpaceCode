@@ -8,7 +8,6 @@ public class Terminal : MonoBehaviour, ITouchable
     [SerializeField] PlayerBehaviour Player;
     [SerializeField] Transform Root;
     [SerializeField] Transform cameraPosition;
-
     private void Update()
     {
         if(Player != null && Input.GetButtonUp("Activate"))
@@ -20,21 +19,21 @@ public class Terminal : MonoBehaviour, ITouchable
 
     public void Activate(PlayerBehaviour player)
     {
-        ColorChange(GetComponentsInChildren<MeshRenderer>(), Color.red);
+        ColorChange(GetComponentsInChildren<Outlines>(), true);
         Player = player;
     }
 
     public void Deactivate(PlayerBehaviour player)
     {
-        ColorChange(GetComponentsInChildren<MeshRenderer>(), Color.white);
+        ColorChange(GetComponentsInChildren<Outlines>(), false);
         Player = null;
     }
 
-    private void ColorChange(MeshRenderer[] meshRenderer, Color color)
+    private void ColorChange(Outlines[] outlines, bool isOn)
     {
-        foreach (MeshRenderer renderer in meshRenderer)
+        foreach (Outlines outline in outlines)
         {
-            renderer.material.color = color;
+            outline.enabled = isOn;
         }
     }
 }

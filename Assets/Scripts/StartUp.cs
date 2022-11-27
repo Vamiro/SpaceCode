@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class StartUp : BehaviourSingleton<StartUp>
 {
@@ -9,5 +10,14 @@ public class StartUp : BehaviourSingleton<StartUp>
     void Start()
     {
         StateMachine.Instance.ChangeState(new InitState());
+    }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    static void Initialize()
+    {
+        if (!SceneManager.GetSceneByBuildIndex(0).isLoaded)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

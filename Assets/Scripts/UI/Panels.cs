@@ -21,5 +21,5 @@ public class Panels : MonoBehaviour
     public Menu menu;
     public MenuSettnigs menuSettnigs;
     public MenuCredits menuCredits;
-
+    public TerminalScreen terminalScreen;
 }

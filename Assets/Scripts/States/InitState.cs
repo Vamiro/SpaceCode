@@ -6,11 +6,11 @@ internal class InitState : IState
 {
     public LoadingScreen LoadingScreen => Panels.Instance.loadingScreen;
 
-    public async void Enter()
+    public void Enter()
     {
         InitializeAudio();
         LoadingScreen.Show();
-        await Task.Delay(TimeSpan.FromSeconds(5));
+        //await Task.Delay(TimeSpan.FromSeconds(5));
         StateMachine.Instance.ChangeState(new MainMenuState());
     }
 
