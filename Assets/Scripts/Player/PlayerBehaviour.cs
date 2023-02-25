@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (playerState == PlayerState.InTerminal) return;
         playerState = PlayerState.InTerminal;
-        Panels.Instance.terminalScreen.Show();
+        SceneManager.LoadSceneAsync("Scenes/TerminalScreen", LoadSceneMode.Additive);
         cameraController.enabled = false;
         playerController.enabled = false;
         _prevPosition = cameraController.transform.position;
@@ -57,7 +58,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (playerState == PlayerState.InWorld) return;
         playerState = PlayerState.InWorld;
-        Panels.Instance.terminalScreen.Close();
+        SceneManager.UnloadSceneAsync("Scenes/TerminalScreen");
         Sequence sequence = DOTween.Sequence();
         sequence.Append(cameraController.transform.DOMove(_prevPosition, 2));
         sequence.Join(cameraController.transform.DORotateQuaternion(_prevRotation, 2));

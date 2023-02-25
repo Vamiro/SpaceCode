@@ -1,0 +1,36 @@
+<Block>
+  <blockName>Block Ins WhenJoystickKeyPressed</blockName>
+  <position>(208.9, -271.7, 0.0)</position>
+  <varManagerName></varManagerName>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks />
+      <inputs>
+        <Input>
+          <isOperation>false</isOperation>
+          <value>Up</value>
+        </Input>
+      </inputs>
+    </Section>
+  </sections>
+</Block>
+#
+<Block>
+  <blockName>Block Ins MoveForward</blockName>
+  <position>(79.0, -580.5, 0.0)</position>
+  <varManagerName></varManagerName>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks />
+      <inputs>
+        <Input>
+          <isOperation>false</isOperation>
+          <value>1</value>
+        </Input>
+      </inputs>
+    </Section>
+  </sections>
+</Block>
+#

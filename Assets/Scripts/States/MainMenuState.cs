@@ -5,6 +5,7 @@ internal class MainMenuState : IState
 {
     public static Menu Menu => Panels.Instance.menu;
 
+
     public void Enter()
     {
         Menu.onStart = OnStart;
@@ -16,6 +17,7 @@ internal class MainMenuState : IState
 
     private void OnStart()
     {
+
         StateMachine.Instance.ChangeState(new GameOnState());
         Debug.Log("OnStart");
     }

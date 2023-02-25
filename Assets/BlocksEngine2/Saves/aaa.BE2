@@ -1,0 +1,89 @@
+<Block>
+  <blockName>Block Ins WhenPlayClicked</blockName>
+  <position>(271.0, -442.0, 0.0)</position>
+  <varManagerName></varManagerName>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks>
+        <Block>
+          <blockName>Block Ins MoveForward</blockName>
+          <position>(0.0, 10.0, 0.0)</position>
+          <varManagerName></varManagerName>
+          <varName />
+          <sections>
+            <Section>
+              <childBlocks />
+              <inputs>
+                <Input>
+                  <isOperation>false</isOperation>
+                  <value>1</value>
+                </Input>
+              </inputs>
+            </Section>
+          </sections>
+        </Block>
+        <Block>
+          <blockName>Block Ins RotateAxis</blockName>
+          <position>(0.0, -60.0, 0.0)</position>
+          <varManagerName></varManagerName>
+          <varName />
+          <sections>
+            <Section>
+              <childBlocks />
+              <inputs>
+                <Input>
+                  <isOperation>false</isOperation>
+                  <value>Y axis</value>
+                </Input>
+                <Input>
+                  <isOperation>false</isOperation>
+                  <value>30</value>
+                </Input>
+              </inputs>
+            </Section>
+          </sections>
+        </Block>
+      </childBlocks>
+      <inputs />
+    </Section>
+  </sections>
+</Block>
+#
+<Block>
+  <blockName>Block Ins If</blockName>
+  <position>(325.6, -731.6, 0.0)</position>
+  <varManagerName></varManagerName>
+  <varName />
+  <sections>
+    <Section>
+      <childBlocks />
+      <inputs>
+        <Input>
+          <isOperation>true</isOperation>
+          <value />
+          <operation>
+            <Block>
+              <blockName>Block Op JoystickKeyPressed</blockName>
+              <position>(-131.8, 30.0, 0.0)</position>
+              <varManagerName></varManagerName>
+              <varName />
+              <sections>
+                <Section>
+                  <childBlocks />
+                  <inputs>
+                    <Input>
+                      <isOperation>false</isOperation>
+                      <value>Up</value>
+                    </Input>
+                  </inputs>
+                </Section>
+              </sections>
+            </Block>
+          </operation>
+        </Input>
+      </inputs>
+    </Section>
+  </sections>
+</Block>
+#

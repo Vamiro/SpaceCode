@@ -17,7 +17,7 @@ public class StartUp : BehaviourSingleton<StartUp>
     {
         if (!SceneManager.GetSceneByBuildIndex(0).isLoaded)
         {
-            SceneManager.LoadScene(0);
+            //SceneManager.LoadScene(0);
         }
     }
 }
