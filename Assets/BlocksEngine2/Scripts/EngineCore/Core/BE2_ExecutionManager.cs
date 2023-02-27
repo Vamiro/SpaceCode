@@ -23,6 +23,7 @@ namespace MG_BlocksEngine2.Core
 
         // v2.7 - Execution Manager instance changed to property to guarantee return
         static BE2_ExecutionManager _instance;
+
         public static BE2_ExecutionManager Instance
         {
             get

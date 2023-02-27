@@ -117,6 +117,7 @@ namespace MG_BlocksEngine2.Core
             {
                 I_BE2_Block lastBlock = InstructionsArray[InstructionsArray.Length - 1].InstructionBase.Block;
                 BE2_MainEventsManager.Instance.TriggerEvent(BE2EventTypesBlock.OnStackExecutionEnd, lastBlock);
+                BE2_MainEventsManager.Instance.TriggerEvent(BE2EventTypes.OnStop);
 
                 Pointer = 0;
                 IsActive = false;
