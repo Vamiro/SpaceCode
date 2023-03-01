@@ -6,18 +6,14 @@ using UnityEngine;
 
 public class LevelItemBehaviour : MonoBehaviour
 {
-     
-    private int _myIndexInItemList;
-
+    private ItemStorage _itemStorage;
     private void Awake()
     {
-        _myIndexInItemList = LevelItemManager.Instance.AddItemToItemList(transform);
-
-        BE2_MainEventsManager.Instance.StartListening(BE2EventTypes.OnStop, ResetPosition);
+        _itemStorage = new ItemStorage(transform);
+        BE2_MainEventsManager.Instance.StartListening(BE2EventTypes.OnStop, _itemStorage.ResetItem);
     }
-
-    private void ResetPosition()
+    private void OnDestroy()
     {
-        LevelItemManager.Instance.ResetItemByIndex(_myIndexInItemList, transform);
+        BE2_MainEventsManager.Instance.StopListening(BE2EventTypes.OnStop, _itemStorage.ResetItem);
     }
 }

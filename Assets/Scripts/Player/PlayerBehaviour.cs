@@ -14,6 +14,9 @@ public class PlayerBehaviour : MonoBehaviour
     private enum PlayerState { InWorld, InTerminal }
     private PlayerState playerState = PlayerState.InWorld;
 
+    [SerializeField] private GameObject _world;
+    [SerializeField] private Camera _camera;
+
     private void Update()
     {
         if(playerState == PlayerState.InTerminal && Input.GetButtonUp("Esc"))
@@ -43,29 +46,43 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (playerState == PlayerState.InTerminal) return;
         playerState = PlayerState.InTerminal;
-        SceneManager.LoadSceneAsync("Scenes/TerminalScreen", LoadSceneMode.Additive);
-        cameraController.enabled = false;
-        playerController.enabled = false;
-        _prevPosition = cameraController.transform.position;
+        var sceneOperation = SceneManager.LoadSceneAsync("Scenes/TerminalScreen", LoadSceneMode.Additive);
+        sceneOperation.completed += (e) =>
+        {
+            _world.SetActive(false);
+            cameraController.enabled = false;
+            playerController.enabled = false;
+            GetComponent<MeshRenderer>().enabled = false;
+            _camera.enabled = false;
+        };
+        /*_prevPosition = cameraController.transform.position;
         _prevRotation = cameraController.transform.rotation;
         Sequence sequence = DOTween.Sequence();
         sequence.Append(cameraController.transform.DOMove(camera.transform.position, 2));
         sequence.Join(cameraController.transform.DORotateQuaternion(camera.transform.rotation, 2));
-        sequence.Play();
+        sequence.Play();*/
     }
 
     public void ToWorldMode()
     {
         if (playerState == PlayerState.InWorld) return;
         playerState = PlayerState.InWorld;
-        SceneManager.UnloadSceneAsync("Scenes/TerminalScreen");
-        Sequence sequence = DOTween.Sequence();
+        var sceneOperation = SceneManager.UnloadSceneAsync("Scenes/TerminalScreen");
+        sceneOperation.completed += (e) => {
+            _world.SetActive(true);
+            GetComponent<MeshRenderer>().enabled = true;
+            _camera.enabled = true;
+            cameraController.enabled = true;
+            playerController.enabled = true;
+        };
+        
+        /*Sequence sequence = DOTween.Sequence();
         sequence.Append(cameraController.transform.DOMove(_prevPosition, 2));
         sequence.Join(cameraController.transform.DORotateQuaternion(_prevRotation, 2));
         sequence.Play().OnComplete(() =>
         {
             cameraController.enabled = true;
             playerController.enabled = true;
-        });
+        });*/
     }
 }

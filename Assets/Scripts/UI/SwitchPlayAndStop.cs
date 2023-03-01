@@ -33,7 +33,7 @@ public class SwitchPlayAndStop : MonoBehaviour
 
     void OnDisable()
     {
-        BE2_MainEventsManager.Instance.StopListening(BE2EventTypes.OnPrimaryKeyUpEnd, SwitchToStop);
+        BE2_MainEventsManager.Instance.StopListening(BE2EventTypes.OnPlay, SwitchToStop);
         BE2_MainEventsManager.Instance.StopListening(BE2EventTypes.OnStop, SwitchToPlay);
     }
 
