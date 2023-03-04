@@ -33,16 +33,19 @@ public class ItemStorage
 
     public void ResetItem()
     {
-        if (_rigidbody != null)
+        if (!LevelManager.Instance._isFinished)
         {
-            _rigidbody.freezeRotation = true;
-        }
-        _transform.position = _position;
-        _transform.rotation = _rotation;
-        _transform.localScale = _scale;
-        if (_rigidbody != null)
-        {
-            _rigidbody.freezeRotation = false;
+            if (_rigidbody != null)
+            {
+                _rigidbody.freezeRotation = true;
+            }
+            _transform.position = _position;
+            _transform.rotation = _rotation;
+            _transform.localScale = _scale;
+            if (_rigidbody != null)
+            {
+                _rigidbody.freezeRotation = false;
+            }
         }
     }
 }
