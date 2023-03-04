@@ -7,46 +7,42 @@ public class LevelManager : MonoBehaviour
 {
     List<GlowObjects> glowObjects = new List<GlowObjects>();
     private IEnumerator _finishAnimation;
-
     public bool _isFinished = false;
-
-    static LevelManager _instance;
-    public static LevelManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<LevelManager>() as LevelManager;
-            }
-            return _instance;
-        }
-        set => _instance = value;
-    }
+    private int _counter;
+    public static LevelManager Instance { get; private set; }
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
         for (int i = 0; i < transform.childCount - 1; i++)
         {
             glowObjects.Add(transform.GetChild(i).GetComponent<GlowObjects>());
         }
-        _finishAnimation = OnGlowObjects();
+        _counter = glowObjects.Count - 1;
     }
 
     public void LevelPassed()
     {
         _isFinished = true;
         BE2_MainEventsManager.Instance.TriggerEvent(BE2EventTypes.OnStop);
-        StartCoroutine(_finishAnimation);
+        Invoke("OnGlowObjects", 0f);
     }
 
-    IEnumerator OnGlowObjects()
+    private void OnGlowObjects()
     {
-        for(int i = glowObjects.Count - 1; i >= 0; i--)
+        if (_counter == -1)
         {
-            StartCoroutine(glowObjects[i].coroutineOnGlow);
-            yield return new WaitForSeconds(0.2f);
+            _counter = glowObjects.Count - 1;
+            return;
         }
-        StopCoroutine(_finishAnimation);
+        else
+        {
+            glowObjects[_counter].Invoke("OnGlowing", 0f);
+            _counter--;
+            Invoke("OnGlowObjects", 0.1f);
+        }
     }
 }

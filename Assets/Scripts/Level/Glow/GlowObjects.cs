@@ -1,12 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 
 public class GlowObjects : MonoBehaviour
 {
     public IEnumerator coroutineOffGlow;
     public IEnumerator coroutineOnGlow;
+    public bool _isOffGlowInProcess = false;
+    public bool _isOnGlowInProcess = false;
 
     private MaterialPropertyBlock _m_MaterialPropertyBlock;
 
@@ -26,16 +26,14 @@ public class GlowObjects : MonoBehaviour
             {
                 _m_MaterialPropertyBlock = new MaterialPropertyBlock();
             }
-            coroutineOffGlow = OffGlowing(_m_MaterialPropertyBlock);
-            coroutineOnGlow = OnGlowing(_m_MaterialPropertyBlock);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "TargetObject" && _m_Renderer != null)
+        if (other.tag == "TargetObject" && _m_Renderer != null)
         {
-            StopCoroutine(coroutineOffGlow);
+            CancelInvoke("OffGlowing");
             VInHSV = 0.84f;
             ChangeEmission();
         }
@@ -45,34 +43,43 @@ public class GlowObjects : MonoBehaviour
     {
         if (other.tag == "TargetObject" && _m_Renderer != null)
         {
-            StartCoroutine(coroutineOffGlow);
+            Invoke("OffGlowing", 0f);
         }
     }
 
-    private IEnumerator OffGlowing(MaterialPropertyBlock materialPropertyBlock)
+    private void OffGlowing()
     {
-        while (VInHSV >= 0.64f)
+        CancelInvoke("OnGlowing");
+        if (VInHSV <= 0.64f)
         {
-            VInHSV -= 0.01f;
+            VInHSV = 0.64f;
             ChangeEmission();
-            yield return new WaitForSeconds(0.05f);
+            CancelInvoke();
+            return;
         }
-        VInHSV = 0.64f;
-        ChangeEmission();
-        StopCoroutine(coroutineOffGlow);
-    }
-    private IEnumerator OnGlowing(MaterialPropertyBlock materialPropertyBlock)
-    {
-        StopCoroutine(coroutineOffGlow);
-        while (VInHSV <= 0.84f)
+        else
         {
-                VInHSV += 0.01f;
-                ChangeEmission();
-                yield return new WaitForSeconds(0.05f);
+            VInHSV -= 0.0005f;
+            ChangeEmission();
+            Invoke("OffGlowing", 0.01f);
         }
-        VInHSV = 0.84f;
-        ChangeEmission();
-        StopCoroutine(coroutineOnGlow);
+    }
+    private void OnGlowing()
+    {
+        CancelInvoke("OffGlowing");
+        if (VInHSV >= 0.84f)
+        {
+            VInHSV = 0.84f;
+            ChangeEmission();
+            CancelInvoke();
+            return;
+        }
+        else
+        {
+            VInHSV += 0.0008f;
+            ChangeEmission();
+            Invoke("OnGlowing", 0.01f);
+        }
     }
 
     private void ChangeEmission()
