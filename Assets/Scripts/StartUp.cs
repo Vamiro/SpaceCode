@@ -7,6 +7,8 @@ public class StartUp : BehaviourSingleton<StartUp>
     [SerializeField] private AudioMixer _audioMixer;
     public AudioMixer AudioMixer => _audioMixer;
 
+    public GameObject camera;
+
     void Start()
     {
         StateMachine.Instance.ChangeState(new InitState());

@@ -12,15 +12,10 @@ public class ItemStorage
     private Quaternion _rotation;
     private Vector3 _scale;
     private Transform _transform;
-    private Rigidbody _rigidbody;
 
     public ItemStorage(Transform transform)
     {
         _transform = transform;
-        if (transform.GetComponent<Rigidbody>() != null)
-        {
-            _rigidbody = transform.GetComponent<Rigidbody>();
-        }
         StoreItem();
     }
 
@@ -35,17 +30,9 @@ public class ItemStorage
     {
         if (!LevelManager.Instance._isFinished)
         {
-            if (_rigidbody != null)
-            {
-                _rigidbody.freezeRotation = true;
-            }
             _transform.position = _position;
             _transform.rotation = _rotation;
             _transform.localScale = _scale;
-            if (_rigidbody != null)
-            {
-                _rigidbody.freezeRotation = false;
-            }
         }
     }
 }

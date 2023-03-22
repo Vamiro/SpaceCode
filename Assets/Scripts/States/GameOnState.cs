@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,8 +8,11 @@ public class GameOnState : IState
 {
     public void Enter()
     {
-        MainMenuState.Menu.Close();
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
+        var sceneOperation = SceneManager.LoadSceneAsync("Scenes/TheFirstRoom", LoadSceneMode.Additive);
+        sceneOperation.completed += (e) => {
+            StartUp.Instance.camera.SetActive(false);
+            MainMenuState.Menu.Close();
+        };
     }
 
     public void Exit()

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ITouchable
 {
-    void Activate(PlayerBehaviour player);
-    void Deactivate(PlayerBehaviour player);
+    void ShowOutline(PlayerBehaviour player);
+    void HideOutline(PlayerBehaviour player);
 }

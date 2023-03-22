@@ -6,7 +6,6 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     List<GlowObjects> glowObjects = new List<GlowObjects>();
-    private IEnumerator _finishAnimation;
     public bool _isFinished = false;
     private int _counter;
     public static LevelManager Instance { get; private set; }
@@ -28,7 +27,7 @@ public class LevelManager : MonoBehaviour
     {
         _isFinished = true;
         BE2_MainEventsManager.Instance.TriggerEvent(BE2EventTypes.OnStop);
-        Invoke("OnGlowObjects", 0f);
+        Invoke("OnGlowObjects", 1f);
     }
 
     private void OnGlowObjects()
@@ -44,5 +43,10 @@ public class LevelManager : MonoBehaviour
             _counter--;
             Invoke("OnGlowObjects", 0.1f);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if(Instance == this) Instance = null;
     }
 }

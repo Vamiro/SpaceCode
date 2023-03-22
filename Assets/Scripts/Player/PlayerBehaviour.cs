@@ -1,88 +1,99 @@
-using DG.Tweening;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    CameraController cameraController;
-    PlayerController playerController;
-    private Vector3 _prevPosition;
-    private Quaternion _prevRotation;
-
     private enum PlayerState { InWorld, InTerminal }
     private PlayerState playerState = PlayerState.InWorld;
 
     [SerializeField] private GameObject _world;
-    [SerializeField] private Camera _camera;
+    [SerializeField] private GameObject _playerRoot;
+
+    private HashSet<Terminal> _terminals = new HashSet<Terminal>();
+    private HashSet<RoomButton> _buttons = new HashSet<RoomButton>();
 
     private void Update()
     {
-        if(playerState == PlayerState.InTerminal && Input.GetButtonUp("Esc"))
+        if (playerState == PlayerState.InWorld && Input.GetButtonUp("Activate"))
         {
-            ToWorldMode();
+
+            var T = FindTerminal();
+            if (T != null)
+            {
+                playerState = PlayerState.InTerminal;
+                T.ToTerminalMode(() => _playerRoot.SetActive(false));
+            }
+            var B = FindButton();
+            if (B != null)
+            {
+                B.PressButton();
+            }
+
+        }
+        if (playerState == PlayerState.InTerminal && Input.GetButtonUp("Esc"))
+        {
+            var T = FindTerminal();
+            if (T != null)
+            {
+                playerState = PlayerState.InWorld;
+                T.ToWorldMode(() => _playerRoot.SetActive(true));
+            }
         }
     }
 
-    private void Awake()
+    private Terminal FindTerminal()
     {
-        cameraController = GetComponentInChildren<CameraController>();
-        playerController = GetComponent<PlayerController>();
+        return _terminals.OrderBy((Terminal T) => Vector3.Distance(T.transform.position, transform.position)).FirstOrDefault();
+    }
+    private RoomButton FindButton()
+    {
+        return _buttons.OrderBy((RoomButton T) => Vector3.Distance(T.transform.position, transform.position)).FirstOrDefault();
     }
 
     private void OnTriggerEnter(Collider collider)
     {
-        var touchable = collider.GetComponentInParent<ITouchable>();
-        if (touchable != null) touchable.Activate(this);
+        Debug.Log("Trigger Enter");
+        var terminal = collider.GetComponentInParent<ITouchable>();
+        if (terminal != null)
+        {
+            if (terminal is Terminal T)
+            {
+                _terminals.Add(T);
+            }
+            terminal.ShowOutline(this);
+        }
+        var button = collider.GetComponent<RoomButton>();
+        if (button != null)
+        {
+            if (button is RoomButton B)
+            {
+                _buttons.Add(B);
+            }
+            button.ShowOutline(this);
+        }
     }
+
     private void OnTriggerExit(Collider collider)
     {
-        var touchable = collider.GetComponentInParent<ITouchable>();
-        if (touchable != null) touchable.Deactivate(this);
-    }
-
-    public void ToTerminalMode(Transform camera)
-    {
-        if (playerState == PlayerState.InTerminal) return;
-        playerState = PlayerState.InTerminal;
-        var sceneOperation = SceneManager.LoadSceneAsync("Scenes/TerminalScreen", LoadSceneMode.Additive);
-        sceneOperation.completed += (e) =>
+        Debug.Log("Trigger Exit");
+        var terminal = collider.GetComponentInParent<ITouchable>();
+        if (terminal != null)
         {
-            _world.SetActive(false);
-            cameraController.enabled = false;
-            playerController.enabled = false;
-            GetComponent<MeshRenderer>().enabled = false;
-            _camera.enabled = false;
-        };
-        /*_prevPosition = cameraController.transform.position;
-        _prevRotation = cameraController.transform.rotation;
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(cameraController.transform.DOMove(camera.transform.position, 2));
-        sequence.Join(cameraController.transform.DORotateQuaternion(camera.transform.rotation, 2));
-        sequence.Play();*/
-    }
-
-    public void ToWorldMode()
-    {
-        if (playerState == PlayerState.InWorld) return;
-        playerState = PlayerState.InWorld;
-        var sceneOperation = SceneManager.UnloadSceneAsync("Scenes/TerminalScreen");
-        sceneOperation.completed += (e) => {
-            _world.SetActive(true);
-            GetComponent<MeshRenderer>().enabled = true;
-            _camera.enabled = true;
-            cameraController.enabled = true;
-            playerController.enabled = true;
-        };
-        
-        /*Sequence sequence = DOTween.Sequence();
-        sequence.Append(cameraController.transform.DOMove(_prevPosition, 2));
-        sequence.Join(cameraController.transform.DORotateQuaternion(_prevRotation, 2));
-        sequence.Play().OnComplete(() =>
+            if (terminal is Terminal T)
+            {
+                _terminals.Remove(T);
+            }
+            terminal.HideOutline(this);
+        }
+        var button = collider.GetComponent<RoomButton>();
+        if (button != null)
         {
-            cameraController.enabled = true;
-            playerController.enabled = true;
-        });*/
+            if (button is RoomButton B)
+            {
+                _buttons.Remove(B);
+            }
+            button.HideOutline(this);
+        }
     }
 }

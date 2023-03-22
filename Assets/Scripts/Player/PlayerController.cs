@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public string moveStatus = "idle";               //movestatus for animations 
+    [SerializeField]private Transform _transform;
 
     //Movement speeds 
     private float jumpSpeed = 8.0f;                  //Jumpspeed / Jumpheight 
@@ -22,6 +23,13 @@ public class PlayerController : MonoBehaviour
     private float pbuffer = 0.0f;                    //Cooldownpuffer for SideButtons 
     private float coolDown = 0.5f;                   //Cooldowntime for SideButtons 
     private CharacterController controller;          //CharacterController for movement 
+
+    private void Awake()
+    {
+        if(_transform == null) _transform = transform;
+        //Get CharacterController 
+        controller = _transform.GetComponent<CharacterController>();
+    }
 
     //Every Frame 
     void Update()
@@ -81,28 +89,26 @@ public class PlayerController : MonoBehaviour
                 moveStatus = isWalking ? "sidewalking_l" : "siderunning_l";
 
             //transform direction 
-            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection = _transform.TransformDirection(moveDirection);
 
         }
 
         // Allow turning at anytime. Keep the character facing in the same direction as the Camera if the right mouse button is down. 
         if (Input.GetMouseButton(1))
         {
-            transform.rotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
+            _transform.rotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
         }
 
         //Apply gravity 
         moveDirection.y -= gravity * Time.deltaTime;
 
-        //Get CharacterController 
-        controller = GetComponent<CharacterController>();
         //Move Charactercontroller and check if grounded 
         grounded = ((controller.Move(moveDirection * Time.deltaTime)) & CollisionFlags.Below) != 0;
 
         //Reset jumping after landing 
         jumping = grounded ? false : jumping;
 
-        //movestatus jump/swimup (for animations)       
+        //movestatus jump (for animations)       
         if (jumping)
             moveStatus = "jump";
     }
