@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
+using MG_BlocksEngine2.Block;
+using MG_BlocksEngine2.Block.Instruction;
 using UnityEngine;
 
-using MG_BlocksEngine2.Block.Instruction;
-using MG_BlocksEngine2.Block;
-
-public class BE2_Ins_SlideForward : BE2_InstructionBase, I_BE2_Instruction
+public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
 {
     //protected override void OnAwake()
     //{
@@ -17,31 +20,66 @@ public class BE2_Ins_SlideForward : BE2_InstructionBase, I_BE2_Instruction
     //    
     //}
 
-    I_BE2_BlockSectionHeaderInput _input0;
-    float _value;
-    float _absValue;
-    bool _firstPlay = true;
-    public new bool ExecuteInUpdate => true;
-
-    protected override void OnButtonStop()
-    {
-        _firstPlay = true;
-        _timer = 0;
-        _counter = 0;
-    }
+    private I_BE2_BlockSectionHeaderInput _input0;
+    private float _value;
+    private float _absValue;
 
     public override void OnStackActive()
     {
-        _firstPlay = true;
-        _timer = 0;
-        _counter = 0;
     }
 
-    float _timer = 0;
-    int _counter = 0;
-    Vector3 _initialPosition;
-    
-    public new void Function()
+    private Vector3 _initialPosition;
+    private TweenerCore<Vector3, Vector3, VectorOptions> _tween;
+
+    protected override async Task<bool> ExecuteFunction(CancellationToken cancellationToken)
+    {
+        _input0 = Section0Inputs[0];
+        _value = _input0.FloatValue;
+        _absValue = Mathf.Abs(_value);
+        _initialPosition = TargetObject.Transform.position;
+
+        if (_value <= 0)
+        {
+            Debug.LogError("Value cannot be negative");
+            return false;
+        }
+
+        for (int i = 1; i < _value; i++)
+        {
+            var isOut = await TryStep(_initialPosition + TargetObject.Transform.forward * i, cancellationToken);
+            if (!isOut) return false;
+        }
+        return true;
+    }
+
+    protected async Task<bool> TryStep(Vector3 nextPos, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested) return false;
+        var transformPosition = nextPos - TargetObject.Transform.position;
+        bool killDate = false;
+        
+        if (Physics.Raycast(TargetObject.Transform.position, transformPosition,
+                transformPosition.magnitude))
+        {
+            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+            return false;
+        }
+        var tween = TargetObject.Transform.DOMove(nextPos, 0.2F).SetEase(Ease.Linear).SetAutoKill(false);
+        tween.OnUpdate(() => { if (cancellationToken.IsCancellationRequested) tween.Kill(); });
+        tween.OnKill(() => killDate = true);
+        await Task.WhenAny(tween.AsyncWaitForCompletion(), tween.AsyncWaitForKill());
+        
+        try
+        {
+            return tween.IsComplete();
+        }
+        finally
+        {
+            tween.Kill();
+        }
+    }
+
+    /*public new void Function()
     {
         if (_firstPlay)
         {
@@ -61,9 +99,11 @@ public class BE2_Ins_SlideForward : BE2_InstructionBase, I_BE2_Instruction
 
                 if (_timer > 1)
                     _timer = 1;
-
-                TargetObject.Transform.position = Vector3.Lerp(_initialPosition, _initialPosition +
-                            (TargetObject.Transform.forward * (_value / _absValue)), _timer);
+                var pos = Vector3.Lerp(_initialPosition, _initialPosition +
+                                                         TargetObject.Transform.forward * (_value / _absValue), _timer);
+                if (Physics.Raycast(TargetObject.Transform.position - TargetObject.Transform.forward / 2,
+                        TargetObject.Transform.forward, 1f)) return;
+                TargetObject.Transform.position = pos;
             }
             else
             {
@@ -79,5 +119,5 @@ public class BE2_Ins_SlideForward : BE2_InstructionBase, I_BE2_Instruction
             _timer = 0;
             _firstPlay = true;
         }
-    }
+    }*/
 }
