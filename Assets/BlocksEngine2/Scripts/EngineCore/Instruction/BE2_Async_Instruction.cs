@@ -29,14 +29,22 @@ public class BE2_Async_Instruction : BE2_InstructionBase
             if (_cts != null)
             {
                 //Debug.LogError($"Async instruction {name} already executed", this);
-                return;
+                return; //stops method if Function already exists on this object
             }
 
-            _cts = new CancellationTokenSource();
-            var result = await ExecuteFunction(_cts.Token);
-            _cts = null;
-            if (result) ExecuteNextInstruction();
-            else BE2_ExecutionManager.Instance.Stop();
+            _cts = new CancellationTokenSource(); //create a Cancellation token
+            var result = await ExecuteFunction(_cts.Token); //execute current block
+            if (result && _cts != null)
+            {
+                _cts = null;
+                Debug.Log($"Execute next instruction{this}");
+                ExecuteNextInstruction();
+            }
+            else
+            {
+                _cts = null;
+                BE2_ExecutionManager.Instance.Stop();
+            }
         }
         catch (TaskCanceledException)
         {

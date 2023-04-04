@@ -24,9 +24,9 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
     private float _value;
     private float _absValue;
 
-    public override void OnStackActive()
+    /*public override void OnStackActive()
     {
-    }
+    }*/
 
     private Vector3 _initialPosition;
     private TweenerCore<Vector3, Vector3, VectorOptions> _tween;
@@ -44,38 +44,40 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
             return false;
         }
 
-        for (int i = 1; i < _value; i++)
+        for (int i = 1; i <= _value; i++)
         {
             var isOut = await TryStep(_initialPosition + TargetObject.Transform.forward * i, cancellationToken);
             if (!isOut) return false;
         }
+
+        await Task.Delay(TimeSpan.FromSeconds(3f), cancellationToken);
         return true;
     }
 
     protected async Task<bool> TryStep(Vector3 nextPos, CancellationToken cancellationToken)
     {
-        if (cancellationToken.IsCancellationRequested) return false;
+        if (cancellationToken.IsCancellationRequested) return false; //stops async method if needed
+        
         var transformPosition = nextPos - TargetObject.Transform.position;
         bool killDate = false;
-        
-        if (Physics.Raycast(TargetObject.Transform.position, transformPosition,
-                transformPosition.magnitude))
+            //raycast starts
+        if (Physics.Raycast(TargetObject.Transform.position, transformPosition, transformPosition.magnitude, ~(1 << LayerMask.NameToLayer("Ignore Raycast"))))
         {
-            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
-            return false;
+            await Task.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken);
+            return false; //stops async method if collides with smth except layerMask "Ignore Raycast"
         }
-        var tween = TargetObject.Transform.DOMove(nextPos, 0.2F).SetEase(Ease.Linear).SetAutoKill(false);
-        tween.OnUpdate(() => { if (cancellationToken.IsCancellationRequested) tween.Kill(); });
-        tween.OnKill(() => killDate = true);
-        await Task.WhenAny(tween.AsyncWaitForCompletion(), tween.AsyncWaitForKill());
-        
+            //raycast ends
+        var tween = TargetObject.Transform.DOMove(nextPos, 0.2F).SetEase(Ease.Linear).SetAutoKill(false); //create DOTween var
+        tween.OnUpdate(() => {if (cancellationToken.IsCancellationRequested) tween.Kill();}); //stops async method and kill DOTween var if needed
+        tween.OnKill(() => { killDate = true; tween = null; Debug.Log($"Tween has been killed{this}");}); //lambda function witch starts when DOTween var was Killed
+        await Task.WhenAny(tween.AsyncWaitForCompletion(), tween.AsyncWaitForKill()); //await fot Completion ot Killing DOTween var
         try
         {
-            return tween.IsComplete();
+            return !killDate && tween.IsComplete(); //returns True if DOTween var completed or False if killed
         }
         finally
         {
-            tween.Kill();
+            if(!killDate) tween.Kill(); //Kills DOTween var if it completed
         }
     }
 
