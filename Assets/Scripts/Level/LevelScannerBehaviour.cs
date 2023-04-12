@@ -1,15 +1,14 @@
-/*
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Color = UnityEngine.Color;
 
 public class LevelScannerBehaviour : MonoBehaviour
 {
-    [SerializeField] private Renderer targetObjectRenderer;
     private Color newColor;
     private Renderer _renderer;
-    private bool isIgnored = false;
+    public string currentScannerHueColor = "Red";
     
     public enum ColorNames
     {
@@ -36,35 +35,20 @@ public class LevelScannerBehaviour : MonoBehaviour
     private void Awake()
     {
         _renderer = gameObject.GetComponent<Renderer>();
-        ColorUtility.TryParseHtmlString(HueColourValue(selecteColorByName), out newColor);
+        ColorUtility.TryParseHtmlString(currentScannerHueColor = HueColourValue(selecteColorByName), out newColor);
         ColorUtility.ToHtmlStringRGB(newColor);
         newColor.a = 0.5019608f;
         _renderer.material.color = newColor;
     }
 
-    private void Update()
+    public static string HueColourValue(ColorNames color)
     {
-        if (CompareColorsRGB(targetObjectRenderer.material.color, _renderer.material.color) && !isIgnored)
-        {
-            gameObject.layer = LayerMask.NameToLayer ("Ignore Raycast");
-            isIgnored = true;
-        }
-        else if (!CompareColorsRGB(targetObjectRenderer.material.color, _renderer.material.color) && isIgnored)
-        {
-            isIgnored = false;
-            gameObject.layer = LayerMask.NameToLayer ("Default");
-        }
+        return (string)HueColour[color];
     }
-
-    public static String HueColourValue(ColorNames color)
+    
+    public static string HueColourValue(string color)
     {
-        return (String)HueColour[color];
-    }
-
-    public bool CompareColorsRGB(Color aColor, Color bColor)
-    {
-        if (aColor.r == bColor.r && aColor.g == bColor.g && aColor.b == bColor.b) return true;
-        else return false;
+        Enum.TryParse(color, out ColorNames newHueColor);
+        return (string)HueColour[newHueColor];
     }
 }
-*/

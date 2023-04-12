@@ -9,7 +9,8 @@ public class LevelManager : MonoBehaviour
     public bool _isFinished = false;
     private int _counter;
     public static LevelManager Instance { get; private set; }
-
+    public TargetObjectBehaviour targetObject;
+    
     private void Awake()
     {
         if (Instance == null)
