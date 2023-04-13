@@ -40,10 +40,7 @@ public class BE2_Ins_ChangeColor : BE2_Async_Instruction, I_BE2_Instruction
     {
         _input0 = Section0Inputs[0];
         _value = _input0.StringValue.ColorName();
-
-        await Task.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken);
         var isOut = await  LevelManager.Instance.targetObject.ChangeColor(_value, cancellationToken);
-        await Task.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken);
         return isOut;
     }
     

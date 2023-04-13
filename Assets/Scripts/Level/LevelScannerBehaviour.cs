@@ -3,7 +3,7 @@ using Color = UnityEngine.Color;
 
 namespace Level
 {
-    public class LevelScannerBehaviour : MonoBehaviour
+    public class LevelScannerBehaviour : MonoBehaviour, IStopTarget
     {
         private Color newColor;
         private Renderer _renderer;
@@ -15,6 +15,11 @@ namespace Level
             newColor = currentScannerHueColor.ConvertColor();
             newColor.a = 0.5019608f;
             _renderer.material.color = newColor;
+        }
+
+        public bool IsLocked(TargetObjectBehaviour targetObject)
+        {
+            return targetObject.CurrentHueColor != currentScannerHueColor;
         }
     }
 }
