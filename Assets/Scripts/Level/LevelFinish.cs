@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class LevelFinish : MonoBehaviour
+namespace Level
 {
-    private void OnTriggerEnter(Collider other)
+    public class LevelFinish : MonoBehaviour
     {
-        if (other.tag == "TargetObject")
+        private void OnTriggerEnter(Collider other)
         {
-            LevelManager.Instance.LevelPassed();
+            if (other.tag == "TargetObject")
+            {
+                LevelManager.Instance.LevelPassed();
+            }
         }
     }
 }

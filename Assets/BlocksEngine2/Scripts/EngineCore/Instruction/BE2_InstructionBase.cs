@@ -111,7 +111,7 @@ namespace MG_BlocksEngine2.Block.Instruction
             OnPrepareToPlay();
         }
 
-        int _overflowLimit = 100;
+        int _overflowLimit = 0;
 
         // v2.9 - ExecuteSection and ExecuteNextInstruction refactored to enable StepPlay and Pause
         public void ExecuteSection(int sectionIndex)

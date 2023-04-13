@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using Level;
 using MG_BlocksEngine2.Block;
 using MG_BlocksEngine2.Block.Instruction;
 using UnityEngine;
@@ -46,41 +47,13 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
 
         for (int i = 1; i <= _value; i++)
         {
-            var isOut = await TryStep(_initialPosition + TargetObject.Transform.forward * i, cancellationToken);
+            var isOut = await  LevelManager.Instance.targetObject.StepForward(_initialPosition + TargetObject.Transform.forward * i, cancellationToken);
             if (!isOut) return false;
         }
 
-        await Task.Delay(TimeSpan.FromSeconds(3f), cancellationToken);
+        //await Task.Delay(TimeSpan.FromSeconds(1f), cancellationToken);
         return true;
     }
-
-    protected async Task<bool> TryStep(Vector3 nextPos, CancellationToken cancellationToken)
-    {
-        if (cancellationToken.IsCancellationRequested) return false; //stops async method if needed
-        
-        var transformPosition = nextPos - TargetObject.Transform.position;
-        bool killDate = false;
-            //raycast starts
-        if (Physics.Raycast(TargetObject.Transform.position, transformPosition, transformPosition.magnitude, ~(1 << LayerMask.NameToLayer("Ignore Raycast"))))
-        {
-            await Task.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken);
-            return false; //stops async method if collides with smth except layerMask "Ignore Raycast"
-        }
-            //raycast ends
-        var tween = TargetObject.Transform.DOMove(nextPos, 0.2F).SetEase(Ease.Linear).SetAutoKill(false); //create DOTween var
-        tween.OnUpdate(() => {if (cancellationToken.IsCancellationRequested) tween.Kill();}); //stops async method and kill DOTween var if needed
-        tween.OnKill(() => { killDate = true; tween = null; Debug.Log($"Tween has been killed{this}");}); //lambda function witch starts when DOTween var was Killed
-        await Task.WhenAny(tween.AsyncWaitForCompletion(), tween.AsyncWaitForKill()); //await fot Completion ot Killing DOTween var
-        try
-        {
-            return !killDate && tween.IsComplete(); //returns True if DOTween var completed or False if killed
-        }
-        finally
-        {
-            if(!killDate) tween.Kill(); //Kills DOTween var if it completed
-        }
-    }
-
     /*public new void Function()
     {
         if (_firstPlay)

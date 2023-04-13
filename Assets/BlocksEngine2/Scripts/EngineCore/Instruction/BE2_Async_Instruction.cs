@@ -26,6 +26,7 @@ public class BE2_Async_Instruction : BE2_InstructionBase
     {
         try
         {
+            //Debug.Log($"Function{this}");
             if (_cts != null)
             {
                 //Debug.LogError($"Async instruction {name} already executed", this);
