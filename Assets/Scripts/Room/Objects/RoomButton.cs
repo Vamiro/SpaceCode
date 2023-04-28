@@ -36,15 +36,11 @@ public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
         }
     }
 
-    public void ShowOutline(PlayerBehaviour player)
+    public void EnableOutline(bool isEnabled)
     {
-        ColorChange(GetComponentsInChildren<Outlines>(), true);
+        ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
     }
 
-    public void HideOutline(PlayerBehaviour player)
-    {
-        ColorChange(GetComponentsInChildren<Outlines>(), false);
-    }
 
     private void ColorChange(Outlines[] outlines, bool isOn)
     {

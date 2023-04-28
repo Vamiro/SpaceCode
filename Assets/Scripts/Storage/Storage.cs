@@ -34,9 +34,9 @@ public class Storage : Singleton<Storage>
     {
         if (string.IsNullOrEmpty(fileName))
         {
-            fileName = typeof(T).Name + ".json";
+            fileName = typeof(T).Name;
         }
-        return Path.Combine(StorageDirectory, fileName);
+        return Path.Combine(StorageDirectory, fileName  + ".json");
     }
 
 #if UNITY_EDITOR

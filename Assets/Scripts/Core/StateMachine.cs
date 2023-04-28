@@ -1,7 +1,8 @@
 using UnityEngine;
-public class StateMachine : Singleton<StateMachine>
+public class StateMachine : BehaviourSingleton<StateMachine>
 {
     private IState _current;
+
     public void ChangeState(IState state)
     {
         if (_current != null)
@@ -16,5 +17,4 @@ public class StateMachine : Singleton<StateMachine>
             _current.Enter();
         }
     }
-
 }

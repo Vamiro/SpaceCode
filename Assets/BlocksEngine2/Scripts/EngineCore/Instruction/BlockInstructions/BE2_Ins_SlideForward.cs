@@ -47,7 +47,8 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
 
         for (int i = 1; i <= _value; i++)
         {
-            var isOut = await  LevelManager.Instance.targetObject.StepForward(_initialPosition + TargetObject.Transform.forward * i, cancellationToken);
+            var isOut = await LevelManager.Instance.TargetObjectBehaviour.StepForward(
+                _initialPosition + TargetObject.Transform.forward * i, cancellationToken);
             if (!isOut) return false;
         }
 

@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Level
 {
     [RequireComponent(typeof(Renderer))]
-    public class TargetObjectBehaviour : MonoBehaviour
+    public class TargetObjectBehaviour : MonoBehaviour, IResetColor
     {
         private Renderer _renderer;
         [SerializeField] private ColorNames _currentHueColor = ColorNames.Blue;

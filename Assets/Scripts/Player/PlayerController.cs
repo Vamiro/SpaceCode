@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -111,5 +112,24 @@ public class PlayerController : MonoBehaviour
         //movestatus jump (for animations)       
         if (jumping)
             moveStatus = "jump";
+    }
+
+    public void OnEnable()
+    {
+        Debug.Log("Player controller: " + transform.parent.position);
+        controller.enabled = true;
+        speedMod = 0.0f;                   //temp Var for Speedcalculation 
+        grounded = false;                   //temp var if the character is grounded 
+        moveDirection = Vector3.zero;    //move direction of the Character 
+        isWalking = false;                  //toggle var between move and run 
+        jumping = false;                    //temp var for jumping 
+        mouseSideButton = false;            //temp var for mouse side buttons 
+        pbuffer = 0.0f;                    //Cooldownpuffer for SideButtons 
+        coolDown = 0.5f;                   //Cooldowntime for SideButtons 
+    }
+
+    public void OnDisable()
+    {
+        controller.enabled = false;
     }
 }

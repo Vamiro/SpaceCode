@@ -66,7 +66,8 @@ namespace Level
                 Invoke("OffGlowing", 0.01f);
             }
         }
-        private void OnGlowing()
+
+        public void OnGlowing()
         {
             CancelInvoke("OffGlowing");
             if (VInHSV >= 0.84f)

@@ -8,16 +8,33 @@ internal class MainMenuState : IState
 
     public void Enter()
     {
-        Menu.onStart = OnStart;
+        Menu.onContinue = OnContinue;
+        Menu.onNewGame = OnNewGame;
+        Menu.onSave = OnSave;
+        Menu.onLoad = OnLoad;
         Menu.onSettings = OnSettings;
         Menu.onCredits = OnCredits;
         Menu.onExit = OnExit;
         Menu.Show();
     }
 
-    private void OnStart()
+    private void OnLoad()
     {
+        StateMachine.Instance.ChangeState(new LoadState());
+    }
 
+    private void OnSave()
+    {
+        StateMachine.Instance.ChangeState(new SaveState());
+    }
+
+    private void OnContinue()
+    {
+        
+    }
+
+    private void OnNewGame()
+    {
         StateMachine.Instance.ChangeState(new GameOnState());
         Debug.Log("OnStart");
     }

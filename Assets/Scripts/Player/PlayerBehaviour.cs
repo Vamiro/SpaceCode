@@ -1,11 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class PlayerBehaviour : MonoBehaviour
+[Serializable]
+public class PlayerData {
+    public Vector3 Position;
+    public Quaternion Rotation;
+}
+
+public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
 {
-    private enum PlayerState { InWorld, InTerminal }
-    private PlayerState playerState = PlayerState.InWorld;
+    public enum PlayerState { InWorld, InTerminal, InMenu }
+    public PlayerState playerState = PlayerState.InWorld;
 
     [SerializeField] private GameObject _world;
     [SerializeField] private GameObject _playerRoot;
@@ -13,87 +22,163 @@ public class PlayerBehaviour : MonoBehaviour
     private HashSet<Terminal> _terminals = new HashSet<Terminal>();
     private HashSet<RoomButton> _buttons = new HashSet<RoomButton>();
 
+    public Terminal currentTerminal;
+    
+    public delegate void PlayerStateChangedHandler(PlayerState newState);
+    public event PlayerStateChangedHandler OnPlayerStateChanged;
+
     private void Update()
     {
-        if (playerState == PlayerState.InWorld && Input.GetButtonUp("Activate"))
+        CheckInput();
+    }
+
+    private void CheckInput()
+    {
+        switch (playerState)
         {
-
-            var T = FindTerminal();
-            if (T != null)
-            {
-                playerState = PlayerState.InTerminal;
-                T.ToTerminalMode(() => _playerRoot.SetActive(false));
-            }
-            var B = FindButton();
-            if (B != null)
-            {
-                B.PressButton();
-            }
-
+            case PlayerState.InWorld:
+                CheckWorldInput();
+                break;
+            case PlayerState.InTerminal:
+                CheckTerminalInput();
+                break;
+            case PlayerState.InMenu:
+                CheckMenuInput();
+                break;
         }
-        if (playerState == PlayerState.InTerminal && Input.GetButtonUp("Esc"))
+    }
+
+    private void CheckWorldInput()
+    {
+        if (Input.GetButtonUp("Activate"))
         {
-            var T = FindTerminal();
-            if (T != null)
+            var terminal = FindNearestObject(_terminals);
+            if (terminal != null)
             {
-                playerState = PlayerState.InWorld;
-                T.ToWorldMode(() => _playerRoot.SetActive(true));
+                currentTerminal = terminal;
+                terminal.ToTerminalMode(() =>
+                {
+                    ExitGameMode(PlayerState.InTerminal, true);
+                });
+            }
+            var button = FindNearestObject(_buttons);
+            if (button != null)
+            {
+                button.PressButton();
+            }
+        }
+        else if (Input.GetButtonUp("Esc"))
+        {
+            ExitGameMode(PlayerState.InMenu, true);
+        }
+    }
+
+    private void CheckTerminalInput()
+    {
+        if (Input.GetButtonUp("Esc"))
+        {
+            var terminal = FindNearestObject(_terminals);
+            if (terminal != null)
+            {
+                terminal.ToWorldMode(() => EnterGameMode(true));
             }
         }
     }
 
-    private Terminal FindTerminal()
+    private void CheckMenuInput()
     {
-        return _terminals.OrderBy((Terminal T) => Vector3.Distance(T.transform.position, transform.position)).FirstOrDefault();
+        if (Input.GetButtonUp("Esc"))
+        {
+            EnterGameMode(true);
+        }
     }
-    private RoomButton FindButton()
+
+    public void ExitGameMode(PlayerState pS, bool isInvoker)
     {
-        return _buttons.OrderBy((RoomButton T) => Vector3.Distance(T.transform.position, transform.position)).FirstOrDefault();
+        _playerRoot.SetActive(false);
+        playerState = pS;
+        if(isInvoker) OnPlayerStateChanged?.Invoke(playerState);
+    }
+    
+    public void EnterGameMode(bool isInvoker)
+    {
+        _playerRoot.SetActive(true);
+        playerState = PlayerState.InWorld;
+        if(isInvoker) OnPlayerStateChanged?.Invoke(playerState);
+        Debug.Log(transform.position);
+    }
+    
+    private T FindNearestObject<T>(IEnumerable<T> objects) where T : Component, ITouchable
+    {
+        return objects.OrderBy((T obj) => Vector3.Distance(obj.transform.position, transform.position)).FirstOrDefault();
+    }
+
+    private void HandleTouchableObject(ITouchable obj, bool isEnter)
+    {
+        if (obj != null)
+        {
+            if (obj is Terminal terminal)
+            {
+                if (isEnter)
+                {
+                    _terminals.Add(terminal);
+                }
+                else
+                {
+                    _terminals.Remove(terminal);
+                }
+            }
+            else if (obj is RoomButton button)
+            {
+                if (isEnter)
+                {
+                    _buttons.Add(button);
+                }
+                else
+                {
+                    _buttons.Remove(button);
+                }
+            }
+            obj.EnableOutline(isEnter);
+        }
     }
 
     private void OnTriggerEnter(Collider collider)
     {
-        Debug.Log("Trigger Enter");
         var terminal = collider.GetComponentInParent<ITouchable>();
-        if (terminal != null)
-        {
-            if (terminal is Terminal T)
-            {
-                _terminals.Add(T);
-            }
-            terminal.ShowOutline(this);
-        }
+        HandleTouchableObject(terminal, true);
         var button = collider.GetComponent<RoomButton>();
-        if (button != null)
-        {
-            if (button is RoomButton B)
-            {
-                _buttons.Add(B);
-            }
-            button.ShowOutline(this);
-        }
+        HandleTouchableObject(button, true);
     }
 
     private void OnTriggerExit(Collider collider)
     {
-        Debug.Log("Trigger Exit");
         var terminal = collider.GetComponentInParent<ITouchable>();
-        if (terminal != null)
-        {
-            if (terminal is Terminal T)
-            {
-                _terminals.Remove(T);
-            }
-            terminal.HideOutline(this);
-        }
+        HandleTouchableObject(terminal, false);
         var button = collider.GetComponent<RoomButton>();
-        if (button != null)
-        {
-            if (button is RoomButton B)
-            {
-                _buttons.Remove(B);
-            }
-            button.HideOutline(this);
+        HandleTouchableObject(button, false);
+    }
+    
+    [SerializeField] private string _id = Guid.NewGuid().ToString();
+    public string Id => _id;
+    
+    public void LoadData(PlayerData data)
+    {
+        if (data == null) {
+            // Base data
         }
+        else {
+            transform.position = data.Position;
+            transform.rotation = data.Rotation;
+        }
+    }
+
+    public PlayerData SaveData()
+    {
+        return new PlayerData()
+        {
+            Position = transform.position,
+            Rotation = transform.rotation
+        };
     }
 }

@@ -4,26 +4,37 @@ using Level;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Terminal : MonoBehaviour, ITouchable
+[Serializable]
+public class TerminalData
 {
-    [SerializeField] Transform Root;
+    public string Name;
+    public bool IsFinished;
+}
 
+public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
+{
     [SerializeField] List<Transform> list = new List<Transform>();
 
     [SerializeField]private int _levelScene;
+    public bool isFinished;
+    
+    private string DataName => "Terminal" + _levelScene;
+    [SerializeField] private string _id;
+    public string Id => _id;
 
     public static Terminal CurrentTerminal { get; private set; }
 
-    public void ShowOutline(PlayerBehaviour player)
+    [ContextMenu("Generate guid for id")]
+    private void GenerateGuid()
     {
-        ColorChange(GetComponentsInChildren<Outlines>(), true);
+        _id = Guid.NewGuid().ToString();
     }
-
-    public void HideOutline(PlayerBehaviour player)
+    
+    public void EnableOutline(bool isEnabled)
     {
-        ColorChange(GetComponentsInChildren<Outlines>(), false);
+        ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
     }
-
+    
     public void ToTerminalMode(Action complete)
     {
 
@@ -36,7 +47,7 @@ public class Terminal : MonoBehaviour, ITouchable
     {
         var sceneOperation = SceneManager.UnloadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene));
         sceneOperation.completed += (e) => complete();
-        if (LevelManager.Instance._isFinished)
+        if (isFinished)
         {
             ActivateObjects();
         }
@@ -69,5 +80,27 @@ public class Terminal : MonoBehaviour, ITouchable
         {
             outline.enabled = isOn;
         }
+    }
+
+    
+    public void LoadData(TerminalData data)
+    {
+        if (data == null) {
+            // Base data
+        }
+        else
+        {
+            isFinished = data.IsFinished;
+            ActivateObjects();
+        }
+    }
+
+    public TerminalData SaveData()
+    {
+        return new TerminalData()
+        {
+            Name = DataName,
+            IsFinished = isFinished
+        };
     }
 }

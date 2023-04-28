@@ -1,56 +1,52 @@
+using System.Collections;
 using System.Collections.Generic;
 using MG_BlocksEngine2.Core;
 using UnityEngine;
 
 namespace Level
 {
-    public class LevelManager : MonoBehaviour
+    public class LevelManager : BehaviourSingleton<LevelManager>
     {
-        List<GlowObjects> glowObjects = new List<GlowObjects>();
-        public bool _isFinished = false;
-        private int _counter;
-        public static LevelManager Instance { get; private set; }
-        public TargetObjectBehaviour targetObject;
-    
-        private void Awake()
+        private List<GlowObjects> glowObjects = new List<GlowObjects>();
+        private int counter; 
+        [SerializeField]private TargetObjectBehaviour targetObject;
+        private Terminal _currentTerminal;
+        private bool _isFinished;
+
+        public bool IsFinished => _isFinished;
+        public TargetObjectBehaviour TargetObjectBehaviour => targetObject;
+
+        protected override void Awake()
         {
-            if (Instance == null)
+            base.Awake();
+            var player = GameObject.FindWithTag("Player");
+            if (player != null)
             {
-                Instance = this;
+                _currentTerminal = player.GetComponent<PlayerBehaviour>().currentTerminal;
             }
-            for (int i = 0; i < transform.childCount - 1; i++)
+            else
             {
-                var component = transform.GetChild(i).GetComponent<GlowObjects>();
-                if (component != null) glowObjects.Add(component);
+                throw new System.Exception("Player not found");
             }
-            _counter = glowObjects.Count - 1;
+            glowObjects.AddRange(GetComponentsInChildren<GlowObjects>());
+            counter = glowObjects.Count;
         }
 
         public void LevelPassed()
         {
+            _currentTerminal.isFinished = true;
             _isFinished = true;
             BE2_MainEventsManager.Instance.TriggerEvent(BE2EventTypes.OnStop);
-            Invoke("OnGlowObjects", 1f);
+            StartCoroutine(OnGlowObjects());
         }
 
-        private void OnGlowObjects()
+        private IEnumerator OnGlowObjects()
         {
-            if (_counter == -1)
+            for (int i = counter - 1; i >= 0; i--)
             {
-                _counter = glowObjects.Count - 1;
-                return;
+                glowObjects[i].OnGlowing();
+                yield return new WaitForSeconds(0.1f);
             }
-            else
-            {
-                glowObjects[_counter].Invoke("OnGlowing", 0f);
-                _counter--;
-                Invoke("OnGlowObjects", 0.1f);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            if(Instance == this) Instance = null;
         }
     }
 }
