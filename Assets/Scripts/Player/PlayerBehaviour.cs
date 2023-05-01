@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 [Serializable]
 public class PlayerData {
@@ -13,99 +11,37 @@ public class PlayerData {
 
 public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
 {
-    public enum PlayerState { InWorld, InTerminal, InMenu }
-    public PlayerState playerState = PlayerState.InWorld;
-
-    [SerializeField] private GameObject _world;
     [SerializeField] private GameObject _playerRoot;
 
     private HashSet<Terminal> _terminals = new HashSet<Terminal>();
     private HashSet<RoomButton> _buttons = new HashSet<RoomButton>();
 
     public Terminal currentTerminal;
-    
-    public delegate void PlayerStateChangedHandler(PlayerState newState);
-    public event PlayerStateChangedHandler OnPlayerStateChanged;
 
-    private void Update()
+    public Terminal ActivateNearestTerminalOrButton()
     {
-        CheckInput();
+        var terminal = FindNearestObject(_terminals);
+        if (terminal != null)
+        {
+            currentTerminal = terminal;
+            return currentTerminal;
+        }
+        var button = FindNearestObject(_buttons);
+        if (button != null)
+        {
+            button.PressButton();
+        }
+        return null;
     }
 
-    private void CheckInput()
-    {
-        switch (playerState)
-        {
-            case PlayerState.InWorld:
-                CheckWorldInput();
-                break;
-            case PlayerState.InTerminal:
-                CheckTerminalInput();
-                break;
-            case PlayerState.InMenu:
-                CheckMenuInput();
-                break;
-        }
-    }
-
-    private void CheckWorldInput()
-    {
-        if (Input.GetButtonUp("Activate"))
-        {
-            var terminal = FindNearestObject(_terminals);
-            if (terminal != null)
-            {
-                currentTerminal = terminal;
-                terminal.ToTerminalMode(() =>
-                {
-                    ExitGameMode(PlayerState.InTerminal, true);
-                });
-            }
-            var button = FindNearestObject(_buttons);
-            if (button != null)
-            {
-                button.PressButton();
-            }
-        }
-        else if (Input.GetButtonUp("Esc"))
-        {
-            ExitGameMode(PlayerState.InMenu, true);
-        }
-    }
-
-    private void CheckTerminalInput()
-    {
-        if (Input.GetButtonUp("Esc"))
-        {
-            var terminal = FindNearestObject(_terminals);
-            if (terminal != null)
-            {
-                terminal.ToWorldMode(() => EnterGameMode(true));
-            }
-        }
-    }
-
-    private void CheckMenuInput()
-    {
-        if (Input.GetButtonUp("Esc"))
-        {
-            EnterGameMode(true);
-        }
-    }
-
-    public void ExitGameMode(PlayerState pS, bool isInvoker)
+    public void ExitGameMode()
     {
         _playerRoot.SetActive(false);
-        playerState = pS;
-        if(isInvoker) OnPlayerStateChanged?.Invoke(playerState);
     }
     
-    public void EnterGameMode(bool isInvoker)
+    public void EnterGameMode()
     {
         _playerRoot.SetActive(true);
-        playerState = PlayerState.InWorld;
-        if(isInvoker) OnPlayerStateChanged?.Invoke(playerState);
-        Debug.Log(transform.position);
     }
     
     private T FindNearestObject<T>(IEnumerable<T> objects) where T : Component, ITouchable

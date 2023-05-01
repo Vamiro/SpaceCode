@@ -24,4 +24,9 @@ public class MenuCreditsState : IState
     {
         _menuCreditsRect.DOAnchorPos(new Vector2(2500, 0), 0.5f).OnComplete(() => MenuCredits.Close());
     }
+
+    public void HandleInput()
+    {
+        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+    }
 }

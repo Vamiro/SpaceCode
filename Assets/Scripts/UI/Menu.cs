@@ -37,7 +37,7 @@ public class Menu : UIPanel
 
     protected override void OnShow()
     {
-        if (GameOnState.IsGameOn)
+        if (StateMachine.Instance.IsGameOn)
         {
             _newGameButton.gameObject.SetActive(false);
             _backToGameButton.gameObject.SetActive(true);

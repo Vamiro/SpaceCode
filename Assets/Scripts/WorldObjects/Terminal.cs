@@ -14,15 +14,14 @@ public class TerminalData
 public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
 {
     [SerializeField] List<Transform> list = new List<Transform>();
-
     [SerializeField]private int _levelScene;
-    public bool isFinished;
-    
-    private string DataName => "Terminal" + _levelScene;
     [SerializeField] private string _id;
+    public bool isFinished;
+
+    private string DataName => "Terminal" + _levelScene;
+    // public static Terminal CurrentTerminal { get; private set; }
     public string Id => _id;
 
-    public static Terminal CurrentTerminal { get; private set; }
 
     [ContextMenu("Generate guid for id")]
     private void GenerateGuid()
@@ -35,33 +34,22 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
         ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
     }
     
-    public void ToTerminalMode(Action complete)
+    public void EnterTerminalMode()
     {
-
-        ThisActivated();
         var sceneOperation = SceneManager.LoadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene), LoadSceneMode.Additive);
-        sceneOperation.completed += (e) => complete();
+        sceneOperation.completed += (e) =>
+        {
+            LevelManager.Instance.currentTerminal = this;
+        };
     }
 
-    public void ToWorldMode(Action complete)
+    public void ExitTerminalMode()
     {
-        var sceneOperation = SceneManager.UnloadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene));
-        sceneOperation.completed += (e) => complete();
+        SceneManager.UnloadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene));
         if (isFinished)
         {
             ActivateObjects();
         }
-        ThisDeactivated();
-    }
-
-    public void ThisActivated()
-    {
-        CurrentTerminal = this;
-    }
-    public void ThisDeactivated()
-    {
-        Debug.Assert(CurrentTerminal == this);
-        CurrentTerminal = null;
     }
 
     public void ActivateObjects()
@@ -74,6 +62,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
             }
         }
     }
+    
     private void ColorChange(Outlines[] outlines, bool isOn)
     {
         foreach (Outlines outline in outlines)
@@ -81,7 +70,6 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
             outline.enabled = isOn;
         }
     }
-
     
     public void LoadData(TerminalData data)
     {
@@ -91,7 +79,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
         else
         {
             isFinished = data.IsFinished;
-            ActivateObjects();
+            if(isFinished) ActivateObjects();
         }
     }
 

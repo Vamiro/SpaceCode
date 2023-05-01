@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -55,5 +53,10 @@ public class LoadState : IState
     public void Exit()
     {
         _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => SaveAndLoad.Close());
+    }
+
+    public void HandleInput()
+    {
+        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
     }
 }

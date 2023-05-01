@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 internal class InitState : IState
 {
@@ -23,5 +21,9 @@ internal class InitState : IState
     public void Exit()
     {
         LoadingScreen.Close();
+    }
+
+    public void HandleInput()
+    {
     }
 }

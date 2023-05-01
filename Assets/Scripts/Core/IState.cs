@@ -2,4 +2,5 @@
 {
     void Enter();
     void Exit();
+    void HandleInput();
 }

@@ -31,4 +31,9 @@ internal class MenuSettingsState : IState
         _menuSettingsRect.DOAnchorPos(new Vector2(0, 1100), 0.5f).OnComplete(() => MenuSettings.Close());
 
     }
+
+    public void HandleInput()
+    {
+        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+    }
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 internal class MainMenuState : IState
 {
@@ -10,12 +9,18 @@ internal class MainMenuState : IState
     {
         Menu.onContinue = OnContinue;
         Menu.onNewGame = OnNewGame;
+        Menu.onBack = OnBack;
         Menu.onSave = OnSave;
         Menu.onLoad = OnLoad;
         Menu.onSettings = OnSettings;
         Menu.onCredits = OnCredits;
         Menu.onExit = OnExit;
         Menu.Show();
+    }
+
+    private void OnBack()
+    {
+        StateMachine.Instance.ChangeState(new GameOnState());
     }
 
     private void OnLoad()
@@ -59,5 +64,10 @@ internal class MainMenuState : IState
 
     public void Exit()
     {
+    }
+
+    public void HandleInput()
+    {
+        if (Input.GetButtonUp("Esc") && StateMachine.Instance.IsGameOn){ StateMachine.Instance.ChangeState(new GameOnState()); }
     }
 }
