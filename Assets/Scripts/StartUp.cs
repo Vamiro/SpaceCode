@@ -9,7 +9,7 @@ public class StartUp : BehaviourSingleton<StartUp>
 
     public GameObject camera;
 
-    void Start()
+    private void Start()
     {
         StateMachine.Instance.ChangeState(new InitState());
     }
@@ -17,9 +17,8 @@ public class StartUp : BehaviourSingleton<StartUp>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     static void Initialize()
     {
-        if (!SceneManager.GetSceneByBuildIndex(0).isLoaded)
-        {
-            //SceneManager.LoadScene(0);
-        }
+        if (SceneManager.GetSceneByBuildIndex(0).isLoaded) return;
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
+        asyncOperation.completed += _ => StateMachine.Instance.ChangeState(new InitState());
     }
 }

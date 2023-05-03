@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+using Scene = UnityEditor.SearchService.SceneSearch;
 
 internal class InitState : IState
 {
-    public LoadingScreen LoadingScreen => Panels.Instance.loadingScreen;
-
     public void Enter()
     {
         InitializeAudio();
-        LoadingScreen.Show();
-        //await Task.Delay(TimeSpan.FromSeconds(5));
         StateMachine.Instance.ChangeState(new MainMenuState());
     }
 
@@ -20,7 +18,6 @@ internal class InitState : IState
 
     public void Exit()
     {
-        LoadingScreen.Close();
     }
 
     public void HandleInput()

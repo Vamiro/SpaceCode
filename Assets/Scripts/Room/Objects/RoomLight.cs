@@ -11,6 +11,6 @@ public class RoomLight : MonoBehaviour, IObjectActivated
 
     public void Deactivate()
     {
-
+        
     }
 }

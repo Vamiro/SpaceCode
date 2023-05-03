@@ -1,28 +1,42 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class LoadingScreen : UIPanel
+public class LoadingScreen : UIPanel<LoadingSceneState>
 {
-    [SerializeField] private TMP_Text _loadingText;
-
+    [SerializeField] private Slider _slider;
+    [SerializeField] private GameObject _camera;
+    
     protected override void OnShow()
     {
-        StartCoroutine(ShowLoadnig());
+        if (_argument.Scene != null) StartCoroutine(ShowLoadnig(_argument));
+        else _argument.OnLoadingCompleted();
     }
 
     protected override void OnClose()
     {
     }
 
-    protected IEnumerator ShowLoadnig()
+    protected IEnumerator ShowLoadnig(LoadingSceneState sceneState)
     {
-        var str = "Loading";
-        while (true)
+        _camera.SetActive(true);
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneState.Scene, sceneState.LoadMode);
+        asyncOperation.allowSceneActivation = false;
+        while (!asyncOperation.isDone)
         {
-            _loadingText.text = str + new string('.', Mathf.FloorToInt(Time.time * 2) % 4);
-            yield return new WaitForSeconds(0.5f);
+            _slider.value = asyncOperation.progress;
+            
+            if (asyncOperation.progress >= 0.9f)
+            {
+                _slider.value = 1;
+                asyncOperation.allowSceneActivation = true;
+            }
+            yield return new WaitForEndOfFrame();
         }
+        _camera.SetActive(false);
+        sceneState.OnLoadingCompleted();
     }
-
 }

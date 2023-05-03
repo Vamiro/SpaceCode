@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadState : IState
 {
@@ -27,36 +28,47 @@ public class LoadState : IState
 
     private void OnSave1()
     {
-        StateMachine.Instance.ChangeState(new GameOnState("Save1"));
+        LoadSave("Save1");
     }
 
     private void OnSave2()
     {
-        StateMachine.Instance.ChangeState(new GameOnState("Save2"));
+        LoadSave("Save2");
     }
 
     private void OnSave3()
     {
-        StateMachine.Instance.ChangeState(new GameOnState("Save3"));
+        LoadSave("Save3");
     }
 
     private void OnSave4()
     {
-        StateMachine.Instance.ChangeState(new GameOnState("Save4"));
+        LoadSave("Save4");
+    }
+
+    private void LoadSave(string save)
+    {
+        _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f)
+            .OnComplete(() =>
+            {
+                StateMachine.Instance.ChangeState(StateMachine.Instance.IsGameOn
+                    ? new LoadingSceneState(new GameOnState(save))
+                    : new LoadingSceneState(new GameOnState(save), "TheFirstRoom"));
+            });
     }
 
     private void OnBack()
     {
-        StateMachine.Instance.ChangeState(new MainMenuState());
+        if(DOTween.PlayingTweens() == null) _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
     }
 
     public void Exit()
     {
-        _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => SaveAndLoad.Close());
+        SaveAndLoad.Close();
     }
 
     public void HandleInput()
     {
-        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+        if (Input.GetButtonUp("Esc")) OnBack();
     }
 }

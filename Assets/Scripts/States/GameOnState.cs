@@ -13,18 +13,7 @@ public class GameOnState :  IState
 
     public void Enter()
     {
-        if (!StateMachine.Instance.IsGameOn)
-        {
-            var sceneOperation = SceneManager.LoadSceneAsync("Scenes/TheFirstRoom", LoadSceneMode.Additive);
-            sceneOperation.completed += _ =>
-            {
-                FindPlayerAndSetupPlayerBehaviour();
-            };
-        }
-        else
-        {
-            FindPlayerAndSetupPlayerBehaviour();
-        }
+        FindPlayerAndSetupPlayerBehaviour();
     }
 
     public void Exit()
@@ -46,6 +35,7 @@ public class GameOnState :  IState
             }
             MainMenuState.Menu.Close();
             StartUp.Instance.camera.SetActive(false);
+            _player.EnterGameMode();
         }
         else
         {
@@ -60,7 +50,7 @@ public class GameOnState :  IState
             var terminal = _player.ActivateNearestTerminalOrButton();
             if (terminal != null)
             {
-                StateMachine.Instance.ChangeState(new TerminalState(terminal));
+                StateMachine.Instance.ChangeState(new LoadingSceneState(new TerminalState(terminal), terminal.LevelScene));
             }
         }
         else if (Input.GetButtonUp("Esc"))

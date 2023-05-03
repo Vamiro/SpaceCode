@@ -69298,6 +69298,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 101795223}
+  currentTerminal: {fileID: 0}
 --- !u!1 &2017691267
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,8 +18,8 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
     [SerializeField] private string _id;
     public bool isFinished;
 
+    public string LevelScene => "SceneLevel" + Convert.ToString(_levelScene);
     private string DataName => "Terminal" + _levelScene;
-    // public static Terminal CurrentTerminal { get; private set; }
     public string Id => _id;
 
 
@@ -36,11 +36,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
     
     public void EnterTerminalMode()
     {
-        var sceneOperation = SceneManager.LoadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene), LoadSceneMode.Additive);
-        sceneOperation.completed += (e) =>
-        {
-            LevelManager.Instance.currentTerminal = this;
-        };
+        LevelManager.Instance.currentTerminal = this;
     }
 
     public void ExitTerminalMode()

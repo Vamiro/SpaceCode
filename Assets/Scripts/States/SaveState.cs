@@ -47,16 +47,16 @@ public class SaveState : IState
 
     private void OnBack()
     {
-        StateMachine.Instance.ChangeState(new MainMenuState());
+        if(DOTween.PlayingTweens() == null) _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
     }
 
     public void Exit()
     {
-        _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => SaveAndLoad.Close());
+        SaveAndLoad.Close();
     }
 
     public void HandleInput()
     {
-        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+        if (Input.GetButtonUp("Esc")) OnBack();
     }
 }

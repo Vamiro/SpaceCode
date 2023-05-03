@@ -22,18 +22,17 @@ internal class MenuSettingsState : IState
 
     private void OnBack()
     {
-        StateMachine.Instance.ChangeState(new MainMenuState());
+        if(DOTween.PlayingTweens() == null) _menuSettingsRect.DOAnchorPos(new Vector2(0, 1100), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
     }
 
     public void Exit()
     {
         SettingsData.Instance.Save();
-        _menuSettingsRect.DOAnchorPos(new Vector2(0, 1100), 0.5f).OnComplete(() => MenuSettings.Close());
-
+        MenuSettings.Close();
     }
 
     public void HandleInput()
     {
-        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+        if (Input.GetButtonUp("Esc")) OnBack();
     }
 }

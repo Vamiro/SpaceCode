@@ -40,30 +40,34 @@ internal class MainMenuState : IState
 
     private void OnNewGame()
     {
-        StateMachine.Instance.ChangeState(new GameOnState());
-        Debug.Log("OnStart");
+        StateMachine.Instance.ChangeState(new LoadingSceneState(new GameOnState(), "TheFirstRoom"));
     }
 
     private void OnSettings()
     {
         StateMachine.Instance.ChangeState(new MenuSettingsState());
-        Debug.Log("OnSettings");
     }
 
     private void OnCredits()
     {
         StateMachine.Instance.ChangeState(new MenuCreditsState());
-        Debug.Log("OnCredits");
     }
 
     private void OnExit()
     {
-        Debug.Log("OnExit");
         Application.Quit();
     }
 
     public void Exit()
     {
+        Menu.onContinue = null;
+        Menu.onNewGame = null;
+        Menu.onBack = null;
+        Menu.onSave = null;
+        Menu.onLoad = null;
+        Menu.onSettings = null;
+        Menu.onCredits = null;
+        Menu.onExit = null;
     }
 
     public void HandleInput()

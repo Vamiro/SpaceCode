@@ -17,16 +17,16 @@ public class MenuCreditsState : IState
 
     private void OnBack()
     {
-        StateMachine.Instance.ChangeState(new MainMenuState());
+        if(DOTween.PlayingTweens() == null) _menuCreditsRect.DOAnchorPos(new Vector2(2500, 0), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
     }
 
     public void Exit()
     {
-        _menuCreditsRect.DOAnchorPos(new Vector2(2500, 0), 0.5f).OnComplete(() => MenuCredits.Close());
+        MenuCredits.Close();
     }
 
     public void HandleInput()
     {
-        if (Input.GetButtonUp("Esc")){ StateMachine.Instance.ChangeState(new MainMenuState()); }
+        if (Input.GetButtonUp("Esc")) OnBack();
     }
 }
