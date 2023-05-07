@@ -12,25 +12,15 @@ public class PlayerData {
 public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
 {
     [SerializeField] private GameObject _playerRoot;
-
-    private HashSet<Terminal> _terminals = new HashSet<Terminal>();
-    private HashSet<RoomButton> _buttons = new HashSet<RoomButton>();
-
+    private HashSet<ITouchable> _touchableObj = new HashSet<ITouchable>();
     public Terminal currentTerminal;
+ 
+    public Inventory GetInventory => this.GetComponent<Inventory>();
 
-    public Terminal ActivateNearestTerminalOrButton()
+    public ITouchable ActivateNearestTerminalOrButton()
     {
-        var terminal = FindNearestObject(_terminals);
-        if (terminal != null)
-        {
-            currentTerminal = terminal;
-            return currentTerminal;
-        }
-        var button = FindNearestObject(_buttons);
-        if (button != null)
-        {
-            button.PressButton();
-        }
+        var obj = FindNearestObject();
+        if (obj != null) return obj;
         return null;
     }
 
@@ -44,36 +34,22 @@ public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
         _playerRoot.SetActive(true);
     }
     
-    private T FindNearestObject<T>(IEnumerable<T> objects) where T : Component, ITouchable
+    private ITouchable FindNearestObject()
     {
-        return objects.OrderBy((T obj) => Vector3.Distance(obj.transform.position, transform.position)).FirstOrDefault();
+        return _touchableObj.OrderBy((obj) => Vector3.Distance(obj.ObjectPosition, transform.position)).FirstOrDefault();
     }
 
     private void HandleTouchableObject(ITouchable obj, bool isEnter)
     {
         if (obj != null)
         {
-            if (obj is Terminal terminal)
+            if (isEnter)
             {
-                if (isEnter)
-                {
-                    _terminals.Add(terminal);
-                }
-                else
-                {
-                    _terminals.Remove(terminal);
-                }
+                _touchableObj.Add(obj);
             }
-            else if (obj is RoomButton button)
+            else
             {
-                if (isEnter)
-                {
-                    _buttons.Add(button);
-                }
-                else
-                {
-                    _buttons.Remove(button);
-                }
+                _touchableObj.Remove(obj);
             }
             obj.EnableOutline(isEnter);
         }
@@ -81,18 +57,14 @@ public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
 
     private void OnTriggerEnter(Collider collider)
     {
-        var terminal = collider.GetComponentInParent<ITouchable>();
-        HandleTouchableObject(terminal, true);
-        var button = collider.GetComponent<RoomButton>();
-        HandleTouchableObject(button, true);
+        var obj = collider.GetComponentInParent<ITouchable>();
+        HandleTouchableObject(obj, true);
     }
 
     private void OnTriggerExit(Collider collider)
     {
-        var terminal = collider.GetComponentInParent<ITouchable>();
-        HandleTouchableObject(terminal, false);
-        var button = collider.GetComponent<RoomButton>();
-        HandleTouchableObject(button, false);
+        var obj = collider.GetComponentInParent<ITouchable>();
+        HandleTouchableObject(obj, false);
     }
     
     [SerializeField] private string _id = Guid.NewGuid().ToString();

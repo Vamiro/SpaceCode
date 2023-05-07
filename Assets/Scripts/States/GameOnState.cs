@@ -47,10 +47,10 @@ public class GameOnState :  IState
     {
         if (Input.GetButtonUp("Activate"))
         {
-            var terminal = _player.ActivateNearestTerminalOrButton();
-            if (terminal != null)
+            var obj = _player.ActivateNearestTerminalOrButton();
+            if (obj != null)
             {
-                StateMachine.Instance.ChangeState(new LoadingSceneState(new TerminalState(terminal), terminal.LevelScene));
+                obj.Activate(_player);
             }
         }
         else if (Input.GetButtonUp("Esc"))

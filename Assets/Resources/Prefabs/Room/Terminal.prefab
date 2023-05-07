@@ -163,8 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd40fb30f4a7234f985a05693d01e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Root: {fileID: 2474592238991014416}
   list: []
+  _levelScene: 0
+  _id: 
+  isFinished: 0
 --- !u!1 &5218690780655362342
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +273,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5751338056294894081}
-  - component: {fileID: 8733984354401843504}
+  - component: {fileID: 9025763598453718258}
   m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
@@ -294,8 +296,8 @@ Transform:
   m_Father: {fileID: 5218690780290696548}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8733984354401843504
-BoxCollider:
+--- !u!135 &9025763598453718258
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -305,5 +307,5 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.2, y: 1.2, z: 1.5}
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}

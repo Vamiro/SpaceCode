@@ -6,19 +6,21 @@ public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
     [SerializeField] private List<Transform> _targets = new List<Transform>();
     private bool _isActive = false;
 
-    public void Activate()
+    public Vector3 ObjectPosition => transform.position;
+
+    public void ActivateObject()
     {
         _isActive = true;
         this.GetComponent<Outlines>().OutlineColor = new Color(0.4f, 1f, 0.4f);
     }
 
-    public void Deactivate()
+    public void DeactivateObject()
     {
         _isActive = false;
         this.GetComponent<Outlines>().OutlineColor = Color.HSVToRGB(1f, 0.3f, 0.25f);
     }
 
-    public void PressButton()
+    public void Activate(PlayerBehaviour playerBehaviour)
     {
         if (_isActive && _targets != null)
         {
@@ -34,6 +36,11 @@ public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
         {
             Debug.Log("Button inactive");
         }
+    }
+
+    public void Deactivate()
+    {
+        
     }
 
     public void EnableOutline(bool isEnabled)

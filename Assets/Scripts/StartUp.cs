@@ -14,7 +14,7 @@ public class StartUp : BehaviourSingleton<StartUp>
         StateMachine.Instance.ChangeState(new InitState());
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void Initialize()
     {
         if (SceneManager.GetSceneByBuildIndex(0).isLoaded) return;

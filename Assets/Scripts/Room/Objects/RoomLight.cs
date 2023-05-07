@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RoomLight : MonoBehaviour, IObjectActivated
 {
-    public void Activate()
+    public void ActivateObject()
     {
         gameObject.SetActive(true);
     }
 
-    public void Deactivate()
+    public void DeactivateObject()
     {
         
     }

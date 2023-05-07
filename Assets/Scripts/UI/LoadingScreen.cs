@@ -25,6 +25,7 @@ public class LoadingScreen : UIPanel<LoadingSceneState>
         _camera.SetActive(true);
         AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneState.Scene, sceneState.LoadMode);
         asyncOperation.allowSceneActivation = false;
+        
         while (!asyncOperation.isDone)
         {
             _slider.value = asyncOperation.progress;

@@ -18,7 +18,8 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
     [SerializeField] private string _id;
     public bool isFinished;
 
-    public string LevelScene => "SceneLevel" + Convert.ToString(_levelScene);
+    public Vector3 ObjectPosition => transform.position;
+    public string LevelScene => "SceneLevel " + Convert.ToString(_levelScene);
     private string DataName => "Terminal" + _levelScene;
     public string Id => _id;
 
@@ -28,7 +29,16 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
     {
         _id = Guid.NewGuid().ToString();
     }
-    
+
+    public void Activate(PlayerBehaviour playerBehaviour)
+    {
+        StateMachine.Instance.ChangeState(new LoadingSceneState(new TerminalState(this), this.LevelScene));
+    }
+    public void Deactivate()
+    {
+        
+    }
+
     public void EnableOutline(bool isEnabled)
     {
         ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
@@ -41,7 +51,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
 
     public void ExitTerminalMode()
     {
-        SceneManager.UnloadSceneAsync("Scenes/SceneLevel" + Convert.ToString(_levelScene));
+        SceneManager.UnloadSceneAsync(LevelScene);
         if (isFinished)
         {
             ActivateObjects();
@@ -54,7 +64,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
         {
             if (list[i].GetComponent<IObjectActivated>() != null)
             {
-                list[i].GetComponent<IObjectActivated>().Activate();
+                list[i].GetComponent<IObjectActivated>().ActivateObject();
             }
         }
     }

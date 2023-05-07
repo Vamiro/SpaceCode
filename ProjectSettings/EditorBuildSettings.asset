@@ -12,9 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/TheFirstRoom.unity
     guid: d1a28062129f76047988902b9d1cde83
   - enabled: 1
-    path: Assets/Scenes/SceneLevel1.unity
+    path: Assets/Scenes/SceneLevel 1.unity
     guid: a144fd97ec051c24a993549de069f569
   - enabled: 1
-    path: Assets/Scenes/SceneLevel2.unity
-    guid: c4838631f6734c147831c0e587465d58
+    path: Assets/Scenes/SceneLevel 2.unity
+    guid: 2c0cfdce592b7e040b4a0987b1d0616e
   m_configObjects: {}

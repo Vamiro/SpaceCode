@@ -36,7 +36,23 @@ namespace MG_BlocksEngine2.UI
 
         void Awake()
         {
-            _button = GetComponent<Button>();
+            _button = GetComponent<Button>(); ;
+            var player = GameObject.FindWithTag("Player");
+            if (player)
+            {
+                var inventory = player.GetComponent<Inventory>();
+                if (inventory)
+                {
+                    if (selectionPanel)
+                    {
+                        if (!selectionPanel.CheckBlocks(inventory))
+                        {
+                            selectionPanel.gameObject.SetActive(false);
+                            gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
         }
 
         void Start()

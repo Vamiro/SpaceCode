@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IObjectActivated
 {
-    public void Activate();
-    public void Deactivate();
+    public void ActivateObject();
+    public void DeactivateObject();
 }

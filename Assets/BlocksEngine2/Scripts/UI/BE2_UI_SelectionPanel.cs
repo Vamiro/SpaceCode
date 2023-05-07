@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Level;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ namespace MG_BlocksEngine2.UI
     {
         LayoutGroup _layoutGroup;
         RectTransform _rectTransform;
+        private BE2_UI_SelectionBlock _selectionBlock;
 
         void OnValidate()
         {
@@ -30,6 +32,21 @@ namespace MG_BlocksEngine2.UI
             _rectTransform = GetComponent<RectTransform>();
         }
 
+        public bool CheckBlocks(Inventory inventory)
+        {
+            var check = false;
+            foreach (var selectionBlock in GetComponentsInChildren<BE2_UI_SelectionBlock>())
+                {
+                    if ((selectionBlock.ModuleToActivate & inventory.Get) != 0)
+                    {
+                        check = true;
+                        selectionBlock.gameObject.SetActive(true);
+                    }
+                    else selectionBlock.gameObject.SetActive(false);
+                }
+            return check;
+        }
+        
         void Start()
         {
             UpdateLayout();

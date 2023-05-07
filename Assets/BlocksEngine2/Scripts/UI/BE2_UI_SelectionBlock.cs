@@ -15,7 +15,10 @@ namespace MG_BlocksEngine2.UI
     public class BE2_UI_SelectionBlock : MonoBehaviour
     {
         public GameObject prefabBlock;
+        [SerializeField] private PlayerModules _playerModules;
 
+        public PlayerModules ModuleToActivate => _playerModules;
+        
         void OnEnable()
         {
             PerformCleanAndResize();
