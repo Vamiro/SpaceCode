@@ -5,16 +5,11 @@ namespace Level
 {
     public class GlowObjects : MonoBehaviour
     {
-        public IEnumerator coroutineOffGlow;
-        public IEnumerator coroutineOnGlow;
-        public bool _isOffGlowInProcess = false;
-        public bool _isOnGlowInProcess = false;
-
         private MaterialPropertyBlock _m_MaterialPropertyBlock;
 
         private Renderer _m_Renderer;
 
-        float HInHSV = 0f;
+        float HInHSV;
         float SInHSV = 0.64f;
         float VInHSV = 0.64f;
 
@@ -27,6 +22,8 @@ namespace Level
                 if (_m_MaterialPropertyBlock == null)
                 {
                     _m_MaterialPropertyBlock = new MaterialPropertyBlock();
+                    Color.RGBToHSV(_m_Renderer.material.GetColor("_EmissionColor"), out float hue, out float saturation, out float value);
+                    HInHSV = hue;
                 }
             }
         }

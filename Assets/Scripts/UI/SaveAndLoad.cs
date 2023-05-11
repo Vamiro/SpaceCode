@@ -1,37 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
-public class SaveAndLoad : UIPanel
+
+public class SaveAndLoad : UIPanel<SaveAndLoad.PanelData>
 {
+    public class PanelData
+    {
+        public bool IsSave;
+        public string Header;
+        public string[] FileList;
+        public Action<string> Callback;
+    }
     [SerializeField] private Button _backButton;
-    [SerializeField] private Button _autosaveButton;
-    [SerializeField] private Button _save1Button;
-    [SerializeField] private Button _save2Button;
-    [SerializeField] private Button _save3Button;
-    [SerializeField] private Button _save4Button;
+    [SerializeField] private TMP_Text _header;
+    [SerializeField] private SimpleList<SaveButtonView, SaveButtonView.Data> _buttonList;
 
     public UnityAction onBack;
-    public UnityAction onAutosave;
-    public UnityAction onSave1;
-    public UnityAction onSave2;
-    public UnityAction onSave3;
-    public UnityAction onSave4;
 
     private void Awake()
     {
         _backButton.onClick.AddListener(() => onBack?.Invoke());
-        _autosaveButton.onClick.AddListener(() => onAutosave?.Invoke());
-        _save1Button.onClick.AddListener(() => onSave1?.Invoke());
-        _save2Button.onClick.AddListener(() => onSave2?.Invoke());
-        _save3Button.onClick.AddListener(() => onSave3?.Invoke());
-        _save4Button.onClick.AddListener(() => onSave4?.Invoke());
     }
 
     protected override void OnShow()
     {
+        _header.text = _argument.Header;
+        UpdatePanelView(_argument);
+    }
+
+    private void OnCallback(SaveButtonView.Data obj)
+    {
+        _argument.Callback.Invoke(obj.FileName);
+    }
+
+    public void UpdatePanelView(PanelData panelData)
+    {
+        var list = panelData.FileList.Select(s => new SaveButtonView.Data{Callback = OnCallback,ButtonName = s, FileName = s}).ToList();
+        if (list.Count() < 10 && StateMachine.Instance.IsGameOn && panelData.IsSave)
+        {
+            list.Add(new SaveButtonView.Data{Callback = OnCallback, ButtonName = "New Save"});
+        }
+        list.Reverse();
+        _buttonList.SetData(list);
     }
 
     protected override void OnClose()

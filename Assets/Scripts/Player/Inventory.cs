@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,13 @@ public class Inventory : MonoBehaviour, IStorable<InventoryData>
         _playerModules |= moduleToSet;
     }
 
-    public string Id { get; }
+    public void Unset(PlayerModules moduleToUnset)
+    {
+        _playerModules &= ~moduleToUnset;
+    }
+
+    [SerializeField] private string _id = Guid.NewGuid().ToString();
+    public string Id => _id;
     public void LoadData(InventoryData data)
     {
         if (data == null) {

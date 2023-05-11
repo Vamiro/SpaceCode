@@ -45,7 +45,7 @@ public class Menu : UIPanel
         }
     }
 
-    protected override void OnClose()
+    protected override void OnClose()   
     {
 
     }

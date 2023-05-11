@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -5,19 +6,14 @@ public class SaveState : IState
 {
     public SaveAndLoad SaveAndLoad => Panels.Instance.saveAndLoad;
     private RectTransform _saveAndLoadRect;
+    private SaveAndLoad.PanelData _panelData;
 
     public void Enter()
     {
         SaveAndLoad.onBack = OnBack;
-        SaveAndLoad.onAutosave = OnAutosave;
-        SaveAndLoad.onSave1 = OnSave1;
-        SaveAndLoad.onSave2 = OnSave2;
-        SaveAndLoad.onSave3 = OnSave3;
-        SaveAndLoad.onSave4 = OnSave4;
-        SaveAndLoad.Show();
-
+        SaveAndLoad.Show(_panelData = new SaveAndLoad.PanelData{Callback = OnSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Save", IsSave = true});
         _saveAndLoadRect = SaveAndLoad.gameObject.GetComponent<RectTransform>();
-        _saveAndLoadRect.DOAnchorPos(new Vector2(250, 0), 0.5f);
+        _saveAndLoadRect.DOAnchorPos(new Vector2(-250, 0), 0.5f);
     }
 
     private void OnAutosave()
@@ -25,26 +21,13 @@ public class SaveState : IState
         return;
     }
 
-    private void OnSave1()
+    private void OnSave(string fileName)
     {
-        StoreDataManager.Instance.SaveGame("Save1");
+        StoreDataManager.Instance.DeleteSave(fileName);
+        StoreDataManager.Instance.SaveGame("Save " + DateTime.Now.ToString("MM.dd HH-mm-ss"));
+        _panelData.FileList = StoreDataManager.Instance.GetSaveList();
+        SaveAndLoad.UpdatePanelView(_panelData);
     }
-
-    private void OnSave2()
-    {
-        StoreDataManager.Instance.SaveGame("Save2");
-    }
-
-    private void OnSave3()
-    {
-        StoreDataManager.Instance.SaveGame("Save3");
-    }
-
-    private void OnSave4()
-    {
-        StoreDataManager.Instance.SaveGame("Save4");
-    }
-
     private void OnBack()
     {
         if(DOTween.PlayingTweens() == null) _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));

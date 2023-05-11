@@ -15,8 +15,11 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
 {
     [SerializeField] List<Transform> list = new List<Transform>();
     [SerializeField]private int _levelScene;
+    [SerializeField] private GameObject _canvas;
     [SerializeField] private string _id;
     public bool isFinished;
+    [SerializeField] private PlayerModules _playerModules;
+    private PlayerBehaviour _player;
 
     public Vector3 ObjectPosition => transform.position;
     public string LevelScene => "SceneLevel " + Convert.ToString(_levelScene);
@@ -32,6 +35,9 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
 
     public void Activate(PlayerBehaviour playerBehaviour)
     {
+        _player = playerBehaviour;
+        _player.GetInventory.Set(_playerModules);
+        EnableCanvas(false);
         StateMachine.Instance.ChangeState(new LoadingSceneState(new TerminalState(this), this.LevelScene));
     }
     public void Deactivate()
@@ -41,6 +47,7 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
 
     public void EnableOutline(bool isEnabled)
     {
+        EnableCanvas(isEnabled);
         ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
     }
     
@@ -52,9 +59,14 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
     public void ExitTerminalMode()
     {
         SceneManager.UnloadSceneAsync(LevelScene);
+        EnableCanvas(true);
         if (isFinished)
         {
             ActivateObjects();
+        }
+        else
+        {
+            _player.GetInventory.Unset(_playerModules);
         }
     }
 
@@ -75,6 +87,11 @@ public class Terminal : MonoBehaviour, ITouchable, IStorable<TerminalData>
         {
             outline.enabled = isOn;
         }
+    }
+
+    private void EnableCanvas(bool isOn)
+    {
+        _canvas.SetActive(isOn);
     }
     
     public void LoadData(TerminalData data)

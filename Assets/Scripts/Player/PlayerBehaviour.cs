@@ -36,7 +36,8 @@ public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
     
     private ITouchable FindNearestObject()
     {
-        return _touchableObj.OrderBy((obj) => Vector3.Distance(obj.ObjectPosition, transform.position)).FirstOrDefault();
+        return _touchableObj.OrderBy((obj) => Vector3.Distance(obj.ObjectPosition,
+            transform.position)).FirstOrDefault();
     }
 
     private void HandleTouchableObject(ITouchable obj, bool isEnter)

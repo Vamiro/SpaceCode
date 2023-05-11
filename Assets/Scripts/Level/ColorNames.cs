@@ -16,7 +16,7 @@ namespace Level
 
     public static class ColorChange
     {
-        private static Hashtable HueColour = new Hashtable
+        private static Hashtable HueColor = new Hashtable
         {
             {ColorNames.Red, "#FF0000"},
             {ColorNames.Orange, "#FF7F00"},
@@ -28,13 +28,13 @@ namespace Level
     
         public static string HueColourValue(this ColorNames color)
         {
-            return (string)HueColour[color];
+            return (string)HueColor[color];
         }
     
         public static string HueColourValue(this string color)
         {
             Enum.TryParse(color, out ColorNames newHueColor);
-            return (string)HueColour[newHueColor];
+            return (string)HueColor[newHueColor];
         }
 
         public static ColorNames ColorName(this string color)

@@ -55,6 +55,7 @@ namespace Level
             tween.OnUpdate(() => { if (cancellationToken.IsCancellationRequested) tween.Kill(); }); //stops async method and kill DOTween var if needed
             tween.OnKill(() => { killDate = true; tween = null; }); //lambda function witch starts when DOTween var was Killed
             await Task.WhenAny(tween.AsyncWaitForCompletion(), tween.AsyncWaitForKill()); //await fot Completion ot Killing DOTween var
+            
             try
             {
                 return !killDate && tween.IsComplete(); //returns True if DOTween var completed or False if killed
@@ -64,14 +65,15 @@ namespace Level
                 if(!killDate) tween.Kill(); //Kills DOTween var if it completed
             }
         }
-
+        
         public async Task<bool> ChangeColor(ColorNames value, CancellationToken cancellationToken)
         {
             //_renderer.material.color = (_currentHueColor = value).ConvertColor();
             if (cancellationToken.IsCancellationRequested) return false;
             
             var killDate = false;
-            var tween = _renderer.material.DOColor((_currentHueColor = value).ConvertColor(), 1f).SetAutoKill(false);
+            var tween = _renderer.material.DOColor((_currentHueColor = value).ConvertColor(),
+                1f).SetAutoKill(false);
             tween.OnUpdate(() => { if (cancellationToken.IsCancellationRequested) tween.Kill(); });
             tween.OnKill(() => { killDate = true; tween = null; });
             
@@ -86,5 +88,17 @@ namespace Level
                 if(!killDate) tween.Kill(); //Kills DOTween var if it completed
             }
         }
+
+        public bool CheckGround()
+        {
+            var ray = new Ray(transform.position, -Vector3.up);
+            if (Physics.Raycast(ray, 1f, LayerMask.GetMask("Ground")))
+            {
+                return true;
+            }
+            Debug.Log("Not on ground");
+            return false;
+        }
+            
     }
 }

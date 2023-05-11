@@ -9,7 +9,7 @@ using MG_BlocksEngine2.Block;
 using MG_BlocksEngine2.Block.Instruction;
 using UnityEngine;
 
-public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
+public class BE2_Ins_Jump : BE2_Async_Instruction, I_BE2_Instruction
 {
     //protected override void OnAwake()
     //{
@@ -22,8 +22,6 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
     //}
 
     private I_BE2_BlockSectionHeaderInput _input0;
-    private float _value;
-    private float _absValue;
 
     /*public override void OnStackActive()
     {
@@ -34,24 +32,18 @@ public class BE2_Ins_SlideForward : BE2_Async_Instruction, I_BE2_Instruction
 
     protected override async Task<bool> ExecuteFunction(CancellationToken cancellationToken)
     {
-        _input0 = Section0Inputs[0];
-        _value = _input0.FloatValue;
-        _absValue = Mathf.Abs(_value);
         _initialPosition = TargetObject.Transform.position;
-
-        if (_value <= 0)
-        {
-            Debug.LogError("Value cannot be negative");
-            return false;
-        }
-
-        for (int i = 1; i <= _value; i++)
-        {
-            var isOut = await LevelManager.Instance.TargetObjectBehaviour.StepForward(
-                _initialPosition + TargetObject.Transform.forward * i, cancellationToken);
-            if (!isOut || !LevelManager.Instance.TargetObjectBehaviour.CheckGround()) return false;
-        }
-        //await Task.Delay(TimeSpan.FromSeconds(1f), cancellationToken);
+        var isOut = await LevelManager.Instance.TargetObjectBehaviour.StepForward(
+            _initialPosition + TargetObject.Transform.up, cancellationToken);
+        
+        if (!isOut) return false;
+        
+        _initialPosition = TargetObject.Transform.position;
+        isOut = await LevelManager.Instance.TargetObjectBehaviour.StepForward(
+            _initialPosition + TargetObject.Transform.forward, cancellationToken);
+        
+        if (!isOut || !LevelManager.Instance.TargetObjectBehaviour.CheckGround()) return false;
+        
         return true;
     }
     /*public new void Function()

@@ -4,7 +4,8 @@
 public enum PlayerModules
 {
     Anything = 1<<0,
-    TurnModule = 1<<1,
-    JumpModule = 1<<2,
-    ChangeColorModule = 1<<3,
+    SlideModule = 1<<1,
+    TurnModule = 1<<2,
+    JumpModule = 1<<3,
+    ChangeColorModule = 1<<4,
 }

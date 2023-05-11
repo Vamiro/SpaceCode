@@ -1,10 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class Storage : Singleton<Storage>
 {
     public static string StorageDirectory => Path.Combine(Application.persistentDataPath, "Storage");
-
+    public static IEnumerable<string> Files() => Directory.EnumerateFiles(StorageDirectory, "*.json");
+    
     static Storage()
     {
         if (!Directory.Exists(StorageDirectory))
@@ -37,6 +40,16 @@ public class Storage : Singleton<Storage>
             fileName = typeof(T).Name;
         }
         return Path.Combine(StorageDirectory, fileName  + ".json");
+    }
+
+    public static void Delete(string fileName)
+    {
+        if(string.IsNullOrEmpty(fileName)) return;
+        var fullName = GetFullName<string>(fileName);
+        if (File.Exists(fullName))
+        {
+            File.Delete(fullName);
+        }
     }
 
 #if UNITY_EDITOR

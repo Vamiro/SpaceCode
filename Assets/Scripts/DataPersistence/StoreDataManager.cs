@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -50,5 +51,15 @@ public class StoreDataManager : BehaviourSingleton<StoreDataManager>
             Items = _objectsData.Select(storable => new StoreItem() { Id = storable.Id, Value = storable.Save() }).ToList()
         };
         Storage.Save(data, file);
+    }
+    
+    public string[] GetSaveList()
+    {
+        return Storage.Files().Select(Path.GetFileNameWithoutExtension).Where(s => s.StartsWith("Save")).ToArray();
+    }
+
+    public void DeleteSave(string fileName)
+    {
+        Storage.Delete(fileName);
     }
 }

@@ -12,7 +12,7 @@ internal class MenuSettingsState : IState
         MenuSettings.Show(SettingsData.Instance);
 
         _menuSettingsRect = MenuSettings.gameObject.GetComponent<RectTransform>();
-        _menuSettingsRect.DOAnchorPos(new Vector2(0, 30), 0.5f);
+        _menuSettingsRect.DOAnchorPos(new Vector2(0, 50), 0.5f);
     }
 
     private void OnChange(SettingsData settingsData)
@@ -22,7 +22,7 @@ internal class MenuSettingsState : IState
 
     private void OnBack()
     {
-        if(DOTween.PlayingTweens() == null) _menuSettingsRect.DOAnchorPos(new Vector2(0, 1100), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
+        if(DOTween.PlayingTweens() == null) _menuSettingsRect.DOAnchorPos(new Vector2(0, 1350), 0.5f).OnComplete(() => StateMachine.Instance.ChangeState(new MainMenuState()));
     }
 
     public void Exit()

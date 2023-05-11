@@ -4,20 +4,20 @@ using UnityEngine;
 public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
 {
     [SerializeField] private List<Transform> _targets = new List<Transform>();
-    private bool _isActive = false;
+    [SerializeField] private bool _isActive = false;
+    [SerializeField] private GameObject _canvas;
+    [SerializeField] private GameObject _notActiveCanvas;
 
     public Vector3 ObjectPosition => transform.position;
 
     public void ActivateObject()
     {
         _isActive = true;
-        this.GetComponent<Outlines>().OutlineColor = new Color(0.4f, 1f, 0.4f);
     }
 
     public void DeactivateObject()
     {
         _isActive = false;
-        this.GetComponent<Outlines>().OutlineColor = Color.HSVToRGB(1f, 0.3f, 0.25f);
     }
 
     public void Activate(PlayerBehaviour playerBehaviour)
@@ -45,12 +45,19 @@ public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
 
     public void EnableOutline(bool isEnabled)
     {
+        EnableCanvas(isEnabled);
         ColorChange(GetComponentsInChildren<Outlines>(), isEnabled);
     }
 
+    private void EnableCanvas(bool isOn)
+    {
+        if(_isActive) _canvas.SetActive(isOn);
+        else _notActiveCanvas.SetActive(isOn);
+    }
 
     private void ColorChange(Outlines[] outlines, bool isOn)
     {
+        if (_isActive) this.GetComponent<Outlines>().OutlineColor = new Color(0.4f, 1f, 0.4f);
         foreach (Outlines outline in outlines)
         {
             outline.enabled = isOn;

@@ -10,40 +10,10 @@ public class LoadState : IState
     public void Enter()
     {
         SaveAndLoad.onBack = OnBack;
-        SaveAndLoad.onAutosave = OnAutosave;
-        SaveAndLoad.onSave1 = OnSave1;
-        SaveAndLoad.onSave2 = OnSave2;
-        SaveAndLoad.onSave3 = OnSave3;
-        SaveAndLoad.onSave4 = OnSave4;
-        SaveAndLoad.Show();
+        SaveAndLoad.Show(new SaveAndLoad.PanelData{Callback = LoadSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Load", IsSave = false});
 
         _saveAndLoadRect = SaveAndLoad.gameObject.GetComponent<RectTransform>();
-        _saveAndLoadRect.DOAnchorPos(new Vector2(250, 0), 0.5f);
-    }
-
-    private void OnAutosave()
-    {
-        return;
-    }
-
-    private void OnSave1()
-    {
-        LoadSave("Save1");
-    }
-
-    private void OnSave2()
-    {
-        LoadSave("Save2");
-    }
-
-    private void OnSave3()
-    {
-        LoadSave("Save3");
-    }
-
-    private void OnSave4()
-    {
-        LoadSave("Save4");
+        _saveAndLoadRect.DOAnchorPos(new Vector2(-250, 0), 0.5f);
     }
 
     private void LoadSave(string save)
@@ -51,9 +21,8 @@ public class LoadState : IState
         _saveAndLoadRect.DOAnchorPos(new Vector2(-2500, 0), 0.5f)
             .OnComplete(() =>
             {
-                StateMachine.Instance.ChangeState(StateMachine.Instance.IsGameOn
-                    ? new LoadingSceneState(new GameOnState(save))
-                    : new LoadingSceneState(new GameOnState(save), "TheFirstRoom"));
+                if (StateMachine.Instance.IsGameOn) SceneManager.UnloadSceneAsync("TheFirstRoom");
+                StateMachine.Instance.ChangeState(new LoadingSceneState(new GameOnState(save), "TheFirstRoom"));
             });
     }
 
