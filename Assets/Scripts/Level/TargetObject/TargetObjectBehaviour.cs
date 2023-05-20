@@ -99,6 +99,26 @@ namespace Level
             Debug.Log("Not on ground");
             return false;
         }
-            
+
+        public bool CheckObstacle()
+        {
+            var transform1 = transform;
+            var position = transform1.position;
+            var transformPosition = transform1.forward;
+            //raycast starts
+            var ray = new Ray(position, transformPosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, transformPosition.magnitude))
+            {
+                if (hit.transform.GetComponent<IStopTarget>() == null)
+                {
+                    return true;
+                }
+                if (hit.transform.GetComponent<IStopTarget>().IsLocked(this))
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
     }
 }

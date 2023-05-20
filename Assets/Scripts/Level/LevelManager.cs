@@ -7,7 +7,8 @@ namespace Level
 {
     public class LevelManager : BehaviourSingleton<LevelManager>
     {
-        private List<GlowObjects> glowObjects = new();
+        private List<GlowObjects> _glowObjects = new();
+        private List<IControllPoint> _controlPoints = new();
         private int counter; 
         [SerializeField]private TargetObjectBehaviour targetObject;
         public Terminal currentTerminal;
@@ -15,12 +16,14 @@ namespace Level
 
         public bool IsFinished => _isFinished;
         public TargetObjectBehaviour TargetObjectBehaviour => targetObject;
+        public List<IControllPoint> ControlPoints => _controlPoints;
 
         protected override void Awake()
         {
             base.Awake();
-            glowObjects.AddRange(GetComponentsInChildren<GlowObjects>());
-            counter = glowObjects.Count;
+            _glowObjects.AddRange(GetComponentsInChildren<GlowObjects>());
+            _controlPoints.AddRange(GetComponentsInChildren<IControllPoint>());
+            counter = _glowObjects.Count;
         }
 
         public void LevelPassed()
@@ -35,7 +38,7 @@ namespace Level
         {
             for (int i = counter - 1; i >= 0; i--)
             {
-                glowObjects[i].OnGlowing();
+                _glowObjects[i].OnGlowing();
                 yield return new WaitForSeconds(0.1f);
             }
         }

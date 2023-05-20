@@ -5,33 +5,33 @@ using Update = Unity.VisualScripting.Update;
 
 public class StateMachine : BehaviourSingleton<StateMachine>
 {
-    private IState _current;
-    private bool _isGameOn;
-    
-    public bool IsGameOn => _isGameOn;
+    public bool IsGameOn { get; private set; }
+
+    public IState GetCurrentState { get; private set; }
+    public IState PrevState { get; private set; }
 
     private void Update()
     {
-        _current.HandleInput();
+        GetCurrentState.HandleInput();
     }
 
     public void ChangeState(IState state)
     {
-        if (_current != null)
+        if (GetCurrentState != null)
         {
-            Debug.Log($"Exit form state {_current.GetType().Name}");
-            _current.Exit();
+            Debug.Log($"Exit form state {GetCurrentState.GetType().Name}");
+            PrevState = GetCurrentState;
+            GetCurrentState.Exit();
         }
-        _current = state;
-        if (_current != null)
+        GetCurrentState = state;
+        if (GetCurrentState != null)
         {
-            Debug.Log($"Enter state {_current.GetType().Name}");
-            _current.Enter();
-            if (!_isGameOn && _current.ToString() == "GameOnState")
+            Debug.Log($"Enter state {GetCurrentState.GetType().Name}");
+            GetCurrentState.Enter();
+            if (!IsGameOn && GetCurrentState.GetType().Name == "GameOnState")
             {
-                _isGameOn = true;
+                IsGameOn = true;
             }
         }
-        
     }
 }

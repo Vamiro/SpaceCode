@@ -22,4 +22,5 @@ public class Panels : MonoBehaviour
     public MenuSettnigs menuSettnigs;
     public MenuCredits menuCredits;
     public SaveAndLoad saveAndLoad;
+    public HintPanel hintPanel;
 }

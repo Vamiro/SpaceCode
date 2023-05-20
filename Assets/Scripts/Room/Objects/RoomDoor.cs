@@ -3,34 +3,39 @@ using UnityEngine;
 
 public class RoomDoor : MonoBehaviour, IButton
 {
-    [SerializeField] private Collider _doorBlock;
-    private float _x, _y, _openY, _z;
+    [SerializeField] private GameObject _door;
+    private Collider _doorBlock;
+    private float _x, _y, _z;
+    private readonly float _open = -2, _close = 0;
     bool isOn = false;
-
+    Transform _doorTransform;
+    
     private void Awake()
     {
-        _x = transform.position.x;
-        _y = transform.position.y;
-        _openY = Mathf.Abs(transform.position.y) * -2;
-        _z = transform.position.z;
+        _doorTransform = _door.transform;
+        _doorBlock = transform.GetComponent<BoxCollider>();
+        
+        var localPosition = _doorTransform.localPosition;
+        _x = localPosition.x;
+        _z = localPosition.z;
     }
     private void OpenDoor()
     {
-        if (Mathf.Round(transform.position.y) != Mathf.Round(_openY))
+        if (Mathf.Round(_doorTransform.localPosition.y) != Mathf.Round(_open))
         {
             _doorBlock.enabled = false;
-            transform.DOMove(new Vector3(_x, _openY, _z), 2).OnComplete(() => SetPosition(_x, _openY, _z));
+            _doorTransform.DOLocalMoveY(_open, 2).OnComplete(() => SetPosition(_x, _open, _z));
         }
         else
         {
             _doorBlock.enabled = true;
-            transform.DOMove(new Vector3(_x, _y, _z), 2).OnComplete(() => SetPosition(_x, _y, _z));
+            _doorTransform.DOLocalMoveY(_close, 2).OnComplete(() => SetPosition(_x, _close, _z));
         }
     }
 
     private void SetPosition(float x, float y, float z)
     {
-        transform.position = new Vector3(x, y, z);
+        _doorTransform.localPosition = new Vector3(x, y, z);
         isOn = false;
     }
 

@@ -65,7 +65,6 @@ namespace MG_BlocksEngine2.Environment
             _transform = transform;
             _rectTransform = GetComponent<RectTransform>();
             UpdateBlocksList();
-
             _parentCanvasGroup = GetComponentInParent<CanvasGroup>();
             _parentGraphicRaycaster = _parentCanvasGroup.GetComponent<GraphicRaycaster>();
         }
@@ -111,7 +110,6 @@ namespace MG_BlocksEngine2.Environment
                         Destroy(childBlock.Transform.gameObject);
                 }
             }
-
             UpdateBlocksList();
         }
     }

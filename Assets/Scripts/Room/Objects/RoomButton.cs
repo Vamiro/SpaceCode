@@ -57,9 +57,10 @@ public class RoomButton : MonoBehaviour, IObjectActivated, ITouchable
 
     private void ColorChange(Outlines[] outlines, bool isOn)
     {
-        if (_isActive) this.GetComponent<Outlines>().OutlineColor = new Color(0.4f, 1f, 0.4f);
+        
         foreach (Outlines outline in outlines)
         {
+            if (_isActive) outline.OutlineColor = new Color(0.4f, 1f, 0.4f);
             outline.enabled = isOn;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MG_BlocksEngine2.Core;
 using UnityEngine;
 
 using MG_BlocksEngine2.DragDrop;
@@ -36,8 +37,7 @@ namespace MG_BlocksEngine2.Block
         public void OnPointerUp()
         {
             I_BE2_Drag drag = _dragDropManager.CurrentDrag;
-            if (drag != null)
-                drag.Transform.SetParent(transform);
+            if (drag != null) drag.Transform.SetParent(transform);
         }
 
         void OnEnable()

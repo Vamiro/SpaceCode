@@ -8,4 +8,8 @@ public enum PlayerModules
     TurnModule = 1<<2,
     JumpModule = 1<<3,
     ChangeColorModule = 1<<4,
+    СonditionModule = 1 << 5,
+    LoopModule = 1 << 6,
+    ListModule = 1 << 7,
+    VeriableModule = 1 << 8,
 }

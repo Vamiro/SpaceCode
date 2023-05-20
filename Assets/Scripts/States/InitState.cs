@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using Scene = UnityEditor.SearchService.SceneSearch;
 
 internal class InitState : IState
 {

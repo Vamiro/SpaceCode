@@ -37,7 +37,7 @@ namespace MG_BlocksEngine2.UI
             var check = false;
             foreach (var selectionBlock in GetComponentsInChildren<BE2_UI_SelectionBlock>())
                 {
-                    if ((selectionBlock.ModuleToActivate & inventory.Get) != 0)
+                    if ((selectionBlock.ModuleToActivate & inventory.Get) == selectionBlock.ModuleToActivate)
                     {
                         check = true;
                         selectionBlock.gameObject.SetActive(true);

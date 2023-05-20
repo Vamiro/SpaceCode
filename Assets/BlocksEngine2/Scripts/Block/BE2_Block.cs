@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,8 +48,14 @@ namespace MG_BlocksEngine2.Block
             BE2_MainEventsManager.Instance.StartListening(BE2EventTypes.OnPrimaryKeyUpEnd, GetParentSection);
         }
 
+        private void OnEnable()
+        {
+            if (Type != BlockTypeEnum.operation) SwitchPlayAndStop.Instance.SetBlocksCount += 1;
+        }
+
         void OnDisable()
         {
+            if (Type != BlockTypeEnum.operation) SwitchPlayAndStop.Instance.SetBlocksCount -= 1;
             BE2_MainEventsManager.Instance.StopListening(BE2EventTypes.OnPrimaryKeyUpEnd, GetParentSection);
         }
 

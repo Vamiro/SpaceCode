@@ -7,6 +7,9 @@ public class CanvasLookAtCamera : MonoBehaviour
 {
     void Update()
     {
-        transform.LookAt(Camera.main.transform.position);
+        if (StateMachine.Instance.GetCurrentState.GetType().Name == "GameOnState")
+        {
+            transform.LookAt(Camera.main.transform.position);
+        }
     }
 }
