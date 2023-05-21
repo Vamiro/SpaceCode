@@ -22,6 +22,7 @@ public class LoadState : IState
             .OnComplete(() =>
             {
                 if (StateMachine.Instance.IsGameOn) SceneManager.UnloadSceneAsync("TheFirstRoom");
+                StateMachine.Instance.IsGameOn = true;
                 StateMachine.Instance.ChangeState(new LoadingSceneState(new GameOnState(save), "TheFirstRoom"));
             });
     }

@@ -11,12 +11,18 @@ public class TerminalState : IState
 
     public void Enter()
     {
-        _terminal.EnterTerminalMode();
+        if (StateMachine.Instance.PrevState.GetType().Name != "HintState")
+        {
+            _terminal.EnterTerminalMode();
+        }
     }
 
     public void Exit()
     {
-        _terminal.ExitTerminalMode();
+        if (StateMachine.Instance.NextState != "HintState")
+        {
+            _terminal.ExitTerminalMode();
+        }
     }
 
     public void HandleInput()

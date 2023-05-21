@@ -33,7 +33,7 @@ public class PlayerBehaviour : MonoBehaviour, IStorable<PlayerData>
     {
         _playerRoot.SetActive(true);
     }
-    
+
     private ITouchable FindNearestObject()
     {
         return _touchableObj.OrderBy((obj) => Vector3.Distance(obj.ObjectPosition,

@@ -75,18 +75,18 @@ public class SwitchPlayAndStop : BehaviourSingleton<SwitchPlayAndStop>
         _blocksText.text = _blocksCount + "/" + _maxBlocks;
         if (_maxBlocks <= 0)
         {
-            _blocksText.color = new Color(0.495283f, 1f, 0.5625787f);
+            _blocksText.color = new Color(0.3f, 1f, 0.5f);
             _blocksText.text = _blocksCount + "/∞";
         }
         else if (_blocksCount <= _maxBlocks && _blocksCount > 0)
         {
             Button.enabled = true;
-            _blocksText.color = new Color(0.495283f, 1f, 0.5625787f);
+            _blocksText.color = new Color(0.3f, 1f, 0.5f);
         }
         else
         {
             Button.enabled = false;
-            _blocksText.color = new Color(1f, 0.4764151f, 0.4764151f);
+            _blocksText.color = new Color(1f, 0.2f, 0.2f);
         }
     }
 }

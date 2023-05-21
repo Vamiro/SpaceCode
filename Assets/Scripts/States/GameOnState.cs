@@ -16,13 +16,17 @@ public class GameOnState :  IState
         FindPlayerAndSetupPlayerBehaviour();
         if (!StateMachine.Instance.IsGameOn)
         {
-            Panels.Instance.hintPanel.Show("Для передвижения используйте клавиши WASD");
+            StateMachine.Instance.IsGameOn = true;
+            StateMachine.Instance.ChangeState(new HintState(0));
         }
     }
 
     public void Exit()
     {
-        _player.ExitGameMode();
+        if (StateMachine.Instance.NextState != "HintState")
+        {
+            _player.ExitGameMode();
+        }
     }
 
     private void FindPlayerAndSetupPlayerBehaviour()

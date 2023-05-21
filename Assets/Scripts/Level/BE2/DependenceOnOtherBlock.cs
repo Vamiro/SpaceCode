@@ -7,7 +7,7 @@ public class DependenceOnOtherBlock : MonoBehaviour
 {
     [SerializeField] private GameObject _dependenceBlock;
 
-    private void Awake()
+    private void Start()
     {
         if (_dependenceBlock.activeSelf) gameObject.SetActive(true);
         else gameObject.SetActive(false);
