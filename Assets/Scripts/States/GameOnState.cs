@@ -17,7 +17,7 @@ public class GameOnState :  IState
         if (!StateMachine.Instance.IsGameOn)
         {
             StateMachine.Instance.IsGameOn = true;
-            StateMachine.Instance.ChangeState(new HintState(0));
+            StateMachine.Instance.ChangeState(new HintState(1));
         }
     }
 

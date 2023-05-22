@@ -21,6 +21,12 @@ public class StateMachine : BehaviourSingleton<StateMachine>
     public void ChangeState(IState state)
     {
         NextState = state.GetType().Name;
+        //Debug.Log($"Before enter\nPrevState - {PrevState}\nCurrentState - {GetCurrentState} state - {state}\nNextState - {NextState}");
+        if (GetCurrentState != null && GetCurrentState.GetType().Name == state.GetType().Name)
+        {
+            Debug.Log($"Can't enter same state {state} twice");
+            return;
+        }
         if (GetCurrentState != null)
         {
             PrevState = GetCurrentState;
@@ -29,8 +35,7 @@ public class StateMachine : BehaviourSingleton<StateMachine>
         GetCurrentState = state;
         if (GetCurrentState != null)
         {
-            Debug.Log("Before enter\nPrevState - " + PrevState + "\nCurrentState - " + GetCurrentState + "\nNextState - " + NextState);
             GetCurrentState.Enter();
         }
-        }
+    }
 }

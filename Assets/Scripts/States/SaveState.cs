@@ -11,7 +11,7 @@ public class SaveState : IState
     public void Enter()
     {
         SaveAndLoad.onBack = OnBack;
-        SaveAndLoad.Show(_panelData = new SaveAndLoad.PanelData{Callback = OnSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Save", IsSave = true});
+        SaveAndLoad.Show(_panelData = new SaveAndLoad.PanelData{Callback = OnSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Сохранение", IsSave = true});
         _saveAndLoadRect = SaveAndLoad.gameObject.GetComponent<RectTransform>();
         _saveAndLoadRect.DOAnchorPos(new Vector2(-250, 0), 0.5f);
     }

@@ -45,7 +45,7 @@ public class SaveAndLoad : UIPanel<SaveAndLoad.PanelData>
         var list = panelData.FileList.Select(s => new SaveButtonView.Data{Callback = OnCallback,ButtonName = s, FileName = s}).ToList();
         if (list.Count() < 10 && StateMachine.Instance.IsGameOn && panelData.IsSave)
         {
-            list.Add(new SaveButtonView.Data{Callback = OnCallback, ButtonName = "New Save"});
+            list.Add(new SaveButtonView.Data{Callback = OnCallback, ButtonName = "Новое сохранение"});
         }
         list.Reverse();
         _buttonList.SetData(list);

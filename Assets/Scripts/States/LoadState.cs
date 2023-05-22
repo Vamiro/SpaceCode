@@ -10,7 +10,7 @@ public class LoadState : IState
     public void Enter()
     {
         SaveAndLoad.onBack = OnBack;
-        SaveAndLoad.Show(new SaveAndLoad.PanelData{Callback = LoadSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Load", IsSave = false});
+        SaveAndLoad.Show(new SaveAndLoad.PanelData{Callback = LoadSave, FileList = StoreDataManager.Instance.GetSaveList(), Header = "Загрузка", IsSave = false});
 
         _saveAndLoadRect = SaveAndLoad.gameObject.GetComponent<RectTransform>();
         _saveAndLoadRect.DOAnchorPos(new Vector2(-250, 0), 0.5f);
